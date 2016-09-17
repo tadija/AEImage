@@ -1,2 +1,2 @@
 # AEImage
-**Simple & lightweight adaptive image viewer with zoom and gyro motion support written in Swift**
+**Simple & lightweight adaptive image viewer for iOS (zoom and gyro motion support)**

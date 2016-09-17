@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 s.name = 'AEImage'
 s.version = '0.1.0'
 s.license = { :type => 'MIT', :file => 'LICENSE' }
-s.summary = 'Simple & lightweight adaptive image viewer with zoom and gyro motion support written in Swift'
+s.summary = 'Simple & lightweight adaptive image viewer for iOS (zoom and gyro motion support)'
 
 s.homepage = 'https://github.com/tadija/AEImage'
 s.author = { 'tadija' => 'tadija@me.com' }
