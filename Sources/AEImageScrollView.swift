@@ -24,32 +24,57 @@
 
 import UIKit
 
+/**
+    This is base class which consists from `UIImageView` inside `UIScrollView`.
+    It will update current zoom scale on `imageView` whenever its `frame` changes.
+ 
+    It may be used directly from code or storyboard with auto layout,
+    just set its `image` property and it will do the rest.
+*/
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Types
     
-    public enum DisplayMode: Int {
-        case automatic, fit, fill, fillWidth, fillHeight
+    /// Modes for calculating zoom scale.
+    public enum DisplayMode {
+        /// switches between `fit` and `fill` depending of the image ratio.
+        case automatic
+        
+        /// Fits entire image.
+        case fit
+        
+        /// Fills entire `imageView`.
+        case fill
+        
+        /// Fills width of the `imageView`.
+        case fillWidth
+        
+        /// Fills height of the `imageView`.
+        case fillHeight
     }
     
     // MARK: - Outlets
     
+    /// Image view which displays the image.
     public let imageView = UIImageView()
     
     // MARK: - Properties
     
+    /// Image to be displayed. UI will be updated whenever you set this property.
     @IBInspectable open var image: UIImage? {
         didSet {
             configureImage()
         }
     }
     
+    /// Mode to be used when calculating zoom scale. Default value is `.automatic`.
     open var displayMode: DisplayMode = .automatic {
         didSet {
             configureZoomScaleForCurrentBounds()
         }
     }
     
+    /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
         didSet {
             configureZoomScaleForCurrentBounds()
@@ -80,12 +105,15 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - UIScrollViewDelegate
     
+    /// View used for zooming is `imageView`, be sure to keep that logic.
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
     
     // MARK: - API
     
+    /// This will center content offset horizontally and verticaly. 
+    /// It's also called whenever `image` property is set.
     open func centerContentOffset() {
         let centerX = (imageView.frame.size.width - bounds.size.width) / 2.0
         let centerY = (imageView.frame.size.height - bounds.size.height) / 2.0
@@ -124,24 +152,19 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         imageView.image = nil
     }
     
-    private var automaticZoomToFill: Bool = false
-    
     private func configureZoomScaleForCurrentBounds() {
         guard let image = image else { return }
-        
-        // reset automaticZoomToFill
-        automaticZoomToFill = false
         
         // get scales needed to perfectly fit the image
         let xScale = bounds.size.width / image.size.width
         let yScale = bounds.size.height / image.size.height
         
-        var scale: CGFloat
+        let scale: CGFloat
         
         // calculate minimum zoom scale
         switch displayMode {
         case .automatic:
-            automaticZoomToFill = abs(xScale - yScale) < 0.15
+            let automaticZoomToFill = abs(xScale - yScale) < 0.15
             scale = automaticZoomToFill ? max(xScale, yScale) : min(xScale, yScale)
         case .fit:
             scale = min(xScale, yScale)
