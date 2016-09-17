@@ -12,6 +12,8 @@
 		8B00380C1D8D836500017853 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380A1D8D836500017853 /* Main.storyboard */; };
 		8B00380E1D8D836500017853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380D1D8D836500017853 /* Assets.xcassets */; };
 		8B0038111D8D836500017853 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380F1D8D836500017853 /* LaunchScreen.storyboard */; };
+		8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; };
+		8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,7 +24,28 @@
 			remoteGlobalIDString = 8B0037E21D8D7C0000017853;
 			remoteInfo = AEImage;
 		};
+		8B0038221D8D8C0400017853 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B0037E11D8D7C0000017853;
+			remoteInfo = AEImage;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8B0038241D8D8C0400017853 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8B0038031D8D836500017853 /* AEImageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AEImageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -40,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,10 +126,12 @@
 				8B0037FF1D8D836500017853 /* Sources */,
 				8B0038001D8D836500017853 /* Frameworks */,
 				8B0038011D8D836500017853 /* Resources */,
+				8B0038241D8D8C0400017853 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8B0038231D8D8C0400017853 /* PBXTargetDependency */,
 			);
 			name = AEImageDemo;
 			productName = AEImageDemo;
@@ -187,6 +213,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8B0038231D8D8C0400017853 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AEImage;
+			targetProxy = 8B0038221D8D8C0400017853 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8B00380A1D8D836500017853 /* Main.storyboard */ = {
@@ -304,6 +338,7 @@
 		8B0038161D8D836500017853 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = VL46Q749LJ;
 				INFOPLIST_FILE = AEImageDemo/Info.plist;
@@ -317,6 +352,7 @@
 		8B0038171D8D836500017853 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = VL46Q749LJ;
 				INFOPLIST_FILE = AEImageDemo/Info.plist;

@@ -7,8 +7,13 @@
 //
 
 import UIKit
+import AEImage
 
-class ImageViewController: UIViewController {
+class ImageViewController: AEImageViewController {
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
 }
 

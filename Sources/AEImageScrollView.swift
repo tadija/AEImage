@@ -22,6 +22,8 @@
 // SOFTWARE.
 //
 
+import UIKit
+
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Types
