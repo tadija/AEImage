@@ -22,31 +22,33 @@
 // SOFTWARE.
 //
 
-class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
+open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
-    enum AEImageScrollViewContentMode: Int {
-        case Automatic, Fit, Fill, FillWidth, FillHeight
+    // MARK: - Types
+    
+    public enum DisplayMode: Int {
+        case automatic, fit, fill, fillWidth, fillHeight
     }
     
     // MARK: - Outlets
     
-    let imageView = UIImageView()
+    public let imageView = UIImageView()
     
     // MARK: - Properties
     
-    @IBInspectable var image: UIImage? {
+    @IBInspectable open var image: UIImage? {
         didSet {
             configureImage()
         }
     }
     
-    var displayMode: AEImageScrollViewContentMode = .Automatic {
+    open var displayMode: DisplayMode = .automatic {
         didSet {
             configureZoomScaleForCurrentBounds()
         }
     }
     
-    override var frame: CGRect {
+    override open var frame: CGRect {
         didSet {
             configureZoomScaleForCurrentBounds()
         }
@@ -54,17 +56,17 @@ class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Init
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
     
-    init() {
+    public init() {
         super.init(frame: CGRect.zero)
         commonInit()
     }
@@ -74,9 +76,15 @@ class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         configureImage()
     }
     
+    // MARK: - UIScrollViewDelegate
+    
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
+    
     // MARK: - API
     
-    func centerContentOffset() {
+    open func centerContentOffset() {
         let centerX = (imageView.frame.size.width - bounds.size.width) / 2.0
         let centerY = (imageView.frame.size.height - bounds.size.height) / 2.0
         let offset = CGPoint(x: centerX, y: centerY)
@@ -91,6 +99,7 @@ class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         showsHorizontalScrollIndicator = false
         bouncesZoom = true
         delegate = self
+        
         addSubview(imageView)
     }
     
@@ -116,43 +125,37 @@ class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     private var automaticZoomToFill: Bool = false
     
     private func configureZoomScaleForCurrentBounds() {
-        if let image = imageView.image {
-            // reset automaticZoomToFill
-            automaticZoomToFill = false
-            
-            // get scales needed to perfectly fit the image
-            let xScale = bounds.size.width / image.size.width
-            let yScale = bounds.size.height / image.size.height
-            
-            var scale: CGFloat
-            
-            // calculate minimum zoom scale
-            switch displayMode {
-            case .Automatic:
-                automaticZoomToFill = abs(xScale - yScale) < 0.15
-                scale = automaticZoomToFill ? max(xScale, yScale) : min(xScale, yScale)
-            case .Fit:
-                scale = min(xScale, yScale)
-            case .Fill:
-                scale = max(xScale, yScale)
-            case .FillWidth:
-                scale = xScale
-            case .FillHeight:
-                scale = yScale
-            }
-            
-            // set minimum and maximum scale for scrollView
-            minimumZoomScale = scale
-            maximumZoomScale = minimumZoomScale * 3.0
-            
-            zoomScale = minimumZoomScale
+        guard let image = image else { return }
+        
+        // reset automaticZoomToFill
+        automaticZoomToFill = false
+        
+        // get scales needed to perfectly fit the image
+        let xScale = bounds.size.width / image.size.width
+        let yScale = bounds.size.height / image.size.height
+        
+        var scale: CGFloat
+        
+        // calculate minimum zoom scale
+        switch displayMode {
+        case .automatic:
+            automaticZoomToFill = abs(xScale - yScale) < 0.15
+            scale = automaticZoomToFill ? max(xScale, yScale) : min(xScale, yScale)
+        case .fit:
+            scale = min(xScale, yScale)
+        case .fill:
+            scale = max(xScale, yScale)
+        case .fillWidth:
+            scale = xScale
+        case .fillHeight:
+            scale = yScale
         }
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        
+        // set minimum and maximum scale for scrollView
+        minimumZoomScale = scale
+        maximumZoomScale = minimumZoomScale * 3.0
+        
+        zoomScale = minimumZoomScale
     }
     
 }

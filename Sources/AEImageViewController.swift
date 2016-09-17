@@ -24,23 +24,23 @@
 
 import UIKit
 
-class AEImageViewController: UIViewController {
+open class AEImageViewController: UIViewController {
     
     // MARK: - Outlets
     
-    let imageScrollView = AEImageScrollView()
+    public let imageScrollView = AEImageScrollView()
     
     // MARK: - Properties
     
-    @IBInspectable var image: UIImage?
+    @IBInspectable open var image: UIImage?
     
-    let motion = AEMotion()
+    open let motion = AEMotion()
     
     private var initialLayout = true
     
     // MARK: - Lifecycle
 
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         configureImageScrollView()
@@ -53,7 +53,7 @@ class AEImageViewController: UIViewController {
         view.insertSubview(imageScrollView, at: 0)
     }
 
-    override func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         if initialLayout {

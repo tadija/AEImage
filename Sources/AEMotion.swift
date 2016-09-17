@@ -24,17 +24,17 @@
 
 import CoreMotion
 
-protocol AEMotionDelegate: class {
+public protocol AEMotionDelegate: class {
     func didUpdate(gyroData: CMGyroData)
 }
 
-class AEMotion: CMMotionManager {
+open class AEMotion: CMMotionManager {
     
     // MARK: - Properties
     
-    weak var delegate: AEMotionDelegate?
+    open weak var delegate: AEMotionDelegate?
     
-    var isEnabled = false {
+    open var isEnabled = false {
         didSet {
             if isEnabled != oldValue {
                 isEnabled ? startTrackingMotion() : stopTrackingMotion()
@@ -44,13 +44,13 @@ class AEMotion: CMMotionManager {
     
     // MARK: - API
     
-    func toggle() {
+    open func toggle() {
         isEnabled = !isEnabled
     }
     
     // MARK: - Helpers
     
-    fileprivate func startTrackingMotion() {
+    private func startTrackingMotion() {
         guard
             let queue = OperationQueue.current,
             isGyroAvailable,
@@ -63,7 +63,7 @@ class AEMotion: CMMotionManager {
         })
     }
     
-    fileprivate func stopTrackingMotion() {
+    private func stopTrackingMotion() {
         stopGyroUpdates()
     }
     
