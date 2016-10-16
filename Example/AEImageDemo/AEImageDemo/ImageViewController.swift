@@ -15,6 +15,8 @@ class ImageViewController: AEImageViewController, AEMotionDelegate, UIScrollView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        image = UIImage(named: "demo1")
         
         imageScrollView.delegate = self
         motion.delegate = self
