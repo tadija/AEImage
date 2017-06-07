@@ -60,6 +60,9 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     /// Image view which displays the image.
     public let imageView = UIImageView()
     
+    private let leftImageView = UIImageView()
+    private let rightImageView = UIImageView()
+    
     // MARK: - Properties
     
     /// Image to be displayed. UI will be updated whenever you set this property.
@@ -131,7 +134,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         bouncesZoom = true
         delegate = self
         
+        stackView.addArrangedSubview(leftImageView)
         stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(rightImageView)
+        
         addSubview(stackView)
     }
     
@@ -146,8 +152,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func resetImage() {
-        imageView.image = nil
         contentSize = CGSize.zero
+        imageView.image = nil
+        leftImageView.image = nil
+        rightImageView.image = nil
     }
     
     private func resetZoomScales() {
@@ -159,11 +167,14 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     private func configureImage() {
         guard let image = image else { return }
         imageView.image = image
+        leftImageView.image = image
+        rightImageView.image = image
         
-        let frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        let size = CGSize(width: image.size.width * 3, height: image.size.height)
+        let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         stackView.frame = frame
         
-        contentSize = image.size
+        contentSize = size
     }
     
     private func configureZoomScales() {
