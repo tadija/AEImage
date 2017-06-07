@@ -61,6 +61,10 @@ class ImageViewController: AEImageViewController, AEMotionDelegate, UIScrollView
         motion.isEnabled = true
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        imageScrollView.scrollViewDidScroll(scrollView)
+    }
+    
     // MARK: - Motion Logic
     
     var isLandscape: Bool {
