@@ -55,6 +55,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Outlets
     
+    private let stackView = UIStackView()
+    
     /// Image view which displays the image.
     public let imageView = UIImageView()
     
@@ -117,7 +119,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     /// View used for zooming is `imageView`, be sure to keep that logic.
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        return stackView
     }
     
     // MARK: - Helpers
@@ -129,7 +131,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         bouncesZoom = true
         delegate = self
         
-        addSubview(imageView)
+        stackView.addArrangedSubview(imageView)
+        addSubview(stackView)
     }
     
     private func updateUI() {
@@ -156,7 +159,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     private func configureImage() {
         guard let image = image else { return }
         imageView.image = image
-        imageView.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        
+        let frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        stackView.frame = frame
+        
         contentSize = image.size
     }
     
@@ -196,8 +202,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     /// This will center content offset horizontally and verticaly.
     /// It's also called whenever `image` property is set.
     open func centerContentOffset() {
-        let centerX = (imageView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (imageView.frame.size.height - bounds.size.height) / 2.0
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
         let offset = CGPoint(x: centerX, y: centerY)
         setContentOffset(offset, animated: false)
     }
@@ -220,7 +226,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
             let maximumContentOffset = CGPoint(x: maxOffsetX, y: maxOffsetY)
             
             // convert our desired center point back to our own coordinate space
-            let boundsCenter = convert(pointToCenter, from: imageView)
+            let boundsCenter = convert(pointToCenter, from: stackView)
             
             // calculate the content offset that would yield that center point
             let offsetX = boundsCenter.x - bounds.size.width / 2.0
