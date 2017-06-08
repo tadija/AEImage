@@ -25,12 +25,12 @@
 import UIKit
 
 /**
- This is base class which consists from `UIImageView` inside `UIScrollView`.
- It will update current zoom scale on `imageView` whenever its `frame` changes.
- 
- It may be used directly from code or storyboard with auto layout,
- just set its `image` property and it will do the rest.
- */
+    This is base class which consists from `UIImageView` inside `UIScrollView`.
+    It will update current zoom scale on `imageView` whenever its `frame` changes.
+
+    It may be used directly from code or storyboard with auto layout,
+    just set its `image` property and it will do the rest.
+*/
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Types
@@ -80,6 +80,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
             }
         }
     }
+    
+    open var infiniteScroll: Bool = true
     
     /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
@@ -136,26 +138,28 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func updateContentOffsetRelative() {
-        let xOffset = contentOffset.x
-        let width = contentSize.width / 3
-        
-        let maxOffset = width * 2
-        if xOffset > maxOffset {
-            let diff = xOffset - maxOffset
-            let newX = width + diff
-            let newOffset = CGPoint(x: newX, y: 0)
-            UIView.performWithoutAnimation {
-                setContentOffset(newOffset, animated: false)
+        if infiniteScroll {
+            let xOffset = contentOffset.x
+            let width = contentSize.width / 3
+            
+            let maxOffset = width * 2
+            if xOffset > maxOffset {
+                let diff = xOffset - maxOffset
+                let newX = width + diff
+                let newOffset = CGPoint(x: newX, y: 0)
+                UIView.performWithoutAnimation {
+                    setContentOffset(newOffset, animated: false)
+                }
             }
-        }
-        
-        let minOffset = width - bounds.width
-        if xOffset < minOffset {
-            let diff = minOffset - xOffset
-            let newX = width + minOffset - diff
-            let newOffset = CGPoint(x: newX, y: 0)
-            UIView.performWithoutAnimation {
-                setContentOffset(newOffset, animated: false)
+            
+            let minOffset = width - bounds.width
+            if xOffset < minOffset {
+                let diff = minOffset - xOffset
+                let newX = width + minOffset - diff
+                let newOffset = CGPoint(x: newX, y: 0)
+                UIView.performWithoutAnimation {
+                    setContentOffset(newOffset, animated: false)
+                }
             }
         }
     }
@@ -163,16 +167,26 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     // MARK: - Helpers
     
     private func configureSelf() {
+        configureScrollView()
+        configureStackView()
+    }
+    
+    private func configureScrollView() {
         backgroundColor = UIColor.black
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
         bouncesZoom = true
         delegate = self
-        
-        stackView.addArrangedSubview(leftImageView)
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(rightImageView)
-        
+    }
+    
+    private func configureStackView() {
+        if infiniteScroll {
+            stackView.addArrangedSubview(leftImageView)
+            stackView.addArrangedSubview(imageView)
+            stackView.addArrangedSubview(rightImageView)
+        } else {
+            stackView.addArrangedSubview(imageView)
+        }
         addSubview(stackView)
     }
     
@@ -205,13 +219,23 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
         
         imageView.image = image
-        leftImageView.image = image
-        rightImageView.image = image
+        if infiniteScroll {
+            leftImageView.image = image
+            rightImageView.image = image
+        }
         
-        let size = CGSize(width: image.size.width * 3, height: image.size.height)
+        configureContentSize(with: image)
+    }
+    
+    private func configureContentSize(with image: UIImage) {
+        let size: CGSize
+        if infiniteScroll {
+            size = CGSize(width: image.size.width * 3, height: image.size.height)
+        } else {
+            size = CGSize(width: image.size.width, height: image.size.height)
+        }
         let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         stackView.frame = frame
-        
         contentSize = size
     }
     
