@@ -126,21 +126,31 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("scrollViewDidScroll | content size: \(scrollView.contentSize) | offset: \(scrollView.contentOffset)")
-
-        let xOffset = scrollView.contentOffset.x
-        let width = scrollView.contentSize.width / 3
+        if !scrollView.isDecelerating {
+            updateContentOffsetRelative()
+        }
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        updateContentOffsetRelative()
+    }
+    
+    private func updateContentOffsetRelative() {
+        let xOffset = contentOffset.x
+        let width = contentSize.width / 3
         
         let maxOffset = width * 2
         if xOffset > maxOffset {
-            let newOffset = CGPoint(x: width, y: 0)
-            scrollView.setContentOffset(newOffset, animated: false)
+            let diff = xOffset - maxOffset
+            let newOffset = CGPoint(x: width + diff, y: 0)
+            setContentOffset(newOffset, animated: false)
         }
         
         let minOffset = width - bounds.width
         if xOffset < minOffset {
-            let newOffset = CGPoint(x: width + minOffset, y: 0)
-            scrollView.setContentOffset(newOffset, animated: false)
+            let diff = minOffset - xOffset
+            let newOffset = CGPoint(x: width + minOffset - diff, y: 0)
+            setContentOffset(newOffset, animated: false)
         }
     }
     

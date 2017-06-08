@@ -58,6 +58,7 @@ class ImageViewController: AEImageViewController, AEMotionDelegate, UIScrollView
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        imageScrollView.scrollViewDidEndDecelerating(scrollView)
         motion.isEnabled = true
     }
     
