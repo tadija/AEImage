@@ -142,7 +142,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         let maxOffset = width * 2
         if xOffset > maxOffset {
             let diff = xOffset - maxOffset
-            let newOffset = CGPoint(x: width + diff, y: 0)
+            let newX = width + diff
+            let newOffset = CGPoint(x: newX, y: 0)
             UIView.performWithoutAnimation {
                 setContentOffset(newOffset, animated: false)
             }
@@ -151,7 +152,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         let minOffset = width - bounds.width
         if xOffset < minOffset {
             let diff = minOffset - xOffset
-            let newOffset = CGPoint(x: width + minOffset - diff, y: 0)
+            let newX = width + minOffset - diff
+            let newOffset = CGPoint(x: newX, y: 0)
             UIView.performWithoutAnimation {
                 setContentOffset(newOffset, animated: false)
             }
@@ -198,7 +200,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func configureImage() {
-        guard let image = image else { return }
+        guard let image = image else {
+            return
+        }
+        
         imageView.image = image
         leftImageView.image = image
         rightImageView.image = image
@@ -211,7 +216,9 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func configureZoomScales() {
-        guard let image = image else { return }
+        guard let image = image else {
+            return
+        }
         
         // get scales needed to perfectly fit the image
         let xScale = bounds.size.width / image.size.width
@@ -258,7 +265,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     private func prepareToResize() {
         let boundsCenter = CGPoint(x: bounds.midX, y: bounds.midY)
-        pointToCenterAfterResize = convert(boundsCenter, to: imageView)
+        pointToCenterAfterResize = convert(boundsCenter, to: stackView)
     }
     
     private func recoverFromResizing() {
