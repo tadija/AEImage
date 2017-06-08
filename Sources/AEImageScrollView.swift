@@ -143,14 +143,18 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         if xOffset > maxOffset {
             let diff = xOffset - maxOffset
             let newOffset = CGPoint(x: width + diff, y: 0)
-            setContentOffset(newOffset, animated: false)
+            UIView.performWithoutAnimation {
+                setContentOffset(newOffset, animated: false)
+            }
         }
         
         let minOffset = width - bounds.width
         if xOffset < minOffset {
             let diff = minOffset - xOffset
             let newOffset = CGPoint(x: width + minOffset - diff, y: 0)
-            setContentOffset(newOffset, animated: false)
+            UIView.performWithoutAnimation {
+                setContentOffset(newOffset, animated: false)
+            }
         }
     }
     
