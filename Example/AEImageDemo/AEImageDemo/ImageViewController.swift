@@ -59,12 +59,7 @@ class ImageViewController: AEImageViewController, AEMotionDelegate, UIScrollView
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        imageScrollView.scrollViewDidEndDecelerating(scrollView)
         motion.isEnabled = true
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        imageScrollView.scrollViewDidScroll(scrollView)
     }
     
     // MARK: - Motion Logic

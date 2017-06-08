@@ -137,34 +137,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         updateUI()
     }
     
-    // MARK: - API
+    // MARK: - Lifecycle
     
-    /// This will center content offset horizontally and verticaly.
-    /// It's also called whenever `image` property is set.
-    open func centerContentOffset() {
-        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
-        let offset = CGPoint(x: centerX, y: centerY)
-        setContentOffset(offset, animated: false)
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    /// View used for zooming must be `stackView`.
-    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return stackView
-    }
-    
-    /// In case of custom `UIScrollViewDelegate` implementation call this if you're using `infiniteScroll` effect.
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if !scrollView.isDecelerating {
-            fakeContentOffsetIfNeeded()
-        }
-    }
-    
-    /// In case of custom `UIScrollViewDelegate` implementation call this if you're using `infiniteScroll` effect.
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    open override func layoutSubviews() {
+        super.layoutSubviews()
         fakeContentOffsetIfNeeded()
     }
     
@@ -208,9 +184,28 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         
         if let newOffset = newOffset {
             UIView.performWithoutAnimation {
-                setContentOffset(newOffset, animated: false)
+                contentOffset = newOffset
             }
         }
+    }
+    
+    // MARK: - API
+    
+    /// This will center content offset horizontally and verticaly.
+    /// It's also called whenever `image` property is set.
+    open func centerContentOffset() {
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
+        let offset = CGPoint(x: centerX, y: centerY)
+        setContentOffset(offset, animated: false)
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return stackView
     }
     
     // MARK: - Helpers
