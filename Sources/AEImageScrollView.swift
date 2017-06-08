@@ -25,11 +25,13 @@
 import UIKit
 
 /**
-    This is base class which consists from `UIImageView` inside `UIScrollView`.
-    It will update current zoom scale on `imageView` whenever its `frame` changes.
+    This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
+    It will automatically update to correct zoom scale (depending on `displayMode`) whenever its `frame` changes.
 
-    It may be used directly from code or storyboard with auto layout,
-    just set its `image` property and it will do the rest.
+    It may be used directly from code or from storyboard with auto layout,
+    just set its `image` and `displayMode` properties and it will do the rest.
+ 
+    It's also possible to enable `infiniteScroll` effect (might be useful for 360 panorama images or similar).
 */
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
@@ -55,11 +57,13 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Outlets
     
-    private let stackView = UIStackView()
+    /// Stack view is placeholder for imageView.
+    public let stackView = UIStackView()
     
     /// Image view which displays the image.
     public let imageView = UIImageView()
     
+    /// Duplicated image views for faking `infiniteScroll` effect.
     private let leftImageView = UIImageView()
     private let rightImageView = UIImageView()
     
@@ -81,7 +85,12 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
     }
     
-    open var infiniteScroll: Bool = true
+    /// Infinite scroll effect (think of 360 panorama). Defaults to `false`.
+    open var infiniteScroll: Bool = false {
+        didSet {
+            resetStackView()
+        }
+    }
     
     /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
@@ -133,17 +142,20 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - UIScrollViewDelegate
     
-    /// View used for zooming is `imageView`, be sure to keep that logic.
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return stackView
     }
     
+    /// In case of custom `UIScrollViewDelegate` implementation call this if you're using `infiniteScroll` effect.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if !scrollView.isDecelerating {
             fakeContentOffsetIfNeeded()
         }
     }
     
+    /// In case of custom `UIScrollViewDelegate` implementation call this if you're using `infiniteScroll` effect.
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         fakeContentOffsetIfNeeded()
     }
@@ -191,6 +203,12 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func configureStackView() {
+        resetStackView()
+        addSubview(stackView)
+    }
+    
+    private func resetStackView() {
+        stackView.arrangedSubviews.forEach { stackView.removeArrangedSubview($0) }
         if infiniteScroll {
             stackView.addArrangedSubview(leftImageView)
             stackView.addArrangedSubview(imageView)
@@ -198,7 +216,6 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         } else {
             stackView.addArrangedSubview(imageView)
         }
-        addSubview(stackView)
     }
     
     private func updateUI() {
