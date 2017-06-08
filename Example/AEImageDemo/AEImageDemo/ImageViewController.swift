@@ -16,7 +16,7 @@ class ImageViewController: AEImageViewController, AEMotionDelegate, UIScrollView
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        imageScrollView.infiniteScroll = true
+        imageScrollView.infiniteScroll = .horizontal
         image = UIImage(named: "demo1")
         
         imageScrollView.delegate = self

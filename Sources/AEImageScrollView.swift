@@ -41,18 +41,24 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     public enum DisplayMode {
         /// switches between `fit` and `fill` depending of the image ratio.
         case automatic
-        
         /// Fits entire image.
         case fit
-        
         /// Fills entire `imageView`.
         case fill
-        
         /// Fills width of the `imageView`.
         case fillWidth
-        
         /// Fills height of the `imageView`.
         case fillHeight
+    }
+    
+    /// Modes for infinite scroll effect.
+    public enum InfiniteScroll {
+        /// Disabled infinite scroll effect.
+        case disabled
+        /// Horizontal infinite scroll effect.
+        case horizontal
+        /// Vertical infinite scroll effect.
+        case vertical
     }
     
     // MARK: - Outlets
@@ -64,8 +70,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     public let imageView = UIImageView()
     
     /// Duplicated image views for faking `infiniteScroll` effect.
-    private let leftImageView = UIImageView()
-    private let rightImageView = UIImageView()
+    private let leadingImageView = UIImageView()
+    private let trailingImageView = UIImageView()
     
     // MARK: - Properties
     
@@ -86,9 +92,11 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     /// Infinite scroll effect (think of 360 panorama). Defaults to `false`.
-    open var infiniteScroll: Bool = false {
+    open var infiniteScroll: InfiniteScroll = .disabled {
         didSet {
-            resetStackView()
+            if infiniteScroll != oldValue {
+                resetStackView()
+            }
         }
     }
     
@@ -161,28 +169,46 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func fakeContentOffsetIfNeeded() {
-        if infiniteScroll {
-            let xOffset = contentOffset.x
-            let width = contentSize.width / 3
-            
+        var newOffset: CGPoint?
+        let xOffset = contentOffset.x
+        let yOffset = contentOffset.y
+        let width = contentSize.width / 3
+        let height = contentSize.height / 3
+        
+        switch infiniteScroll {
+        case .disabled:
+            break
+        case .horizontal:
             let maxOffset = width * 2
             if xOffset > maxOffset {
                 let diff = xOffset - maxOffset
                 let newX = width + diff
-                let newOffset = CGPoint(x: newX, y: 0)
-                UIView.performWithoutAnimation {
-                    setContentOffset(newOffset, animated: false)
-                }
+                newOffset = CGPoint(x: newX, y: yOffset)
             }
-            
             let minOffset = width - bounds.width
             if xOffset < minOffset {
                 let diff = minOffset - xOffset
                 let newX = width + minOffset - diff
-                let newOffset = CGPoint(x: newX, y: 0)
-                UIView.performWithoutAnimation {
-                    setContentOffset(newOffset, animated: false)
-                }
+                newOffset = CGPoint(x: newX, y: yOffset)
+            }
+        case .vertical:
+            let maxOffset = height * 2
+            if yOffset > maxOffset {
+                let diff = yOffset - maxOffset
+                let newY = height + diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+            let minOffset = height - bounds.height
+            if yOffset < minOffset {
+                let diff = minOffset - yOffset
+                let newY = height + minOffset - diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+        }
+        
+        if let newOffset = newOffset {
+            UIView.performWithoutAnimation {
+                setContentOffset(newOffset, animated: false)
             }
         }
     }
@@ -209,12 +235,19 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     private func resetStackView() {
         stackView.arrangedSubviews.forEach { stackView.removeArrangedSubview($0) }
-        if infiniteScroll {
-            stackView.addArrangedSubview(leftImageView)
+        switch infiniteScroll {
+        case .disabled:
             stackView.addArrangedSubview(imageView)
-            stackView.addArrangedSubview(rightImageView)
-        } else {
+        case .horizontal:
+            stackView.axis = .horizontal
+            stackView.addArrangedSubview(leadingImageView)
             stackView.addArrangedSubview(imageView)
+            stackView.addArrangedSubview(trailingImageView)
+        case .vertical:
+            stackView.axis = .vertical
+            stackView.addArrangedSubview(leadingImageView)
+            stackView.addArrangedSubview(imageView)
+            stackView.addArrangedSubview(trailingImageView)
         }
     }
     
@@ -234,8 +267,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     private func resetImage() {
         contentSize = CGSize.zero
         imageView.image = nil
-        leftImageView.image = nil
-        rightImageView.image = nil
+        leadingImageView.image = nil
+        trailingImageView.image = nil
     }
     
     private func resetZoomScales() {
@@ -246,18 +279,21 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     private func updateImage(_ image: UIImage) {
         imageView.image = image
-        if infiniteScroll {
-            leftImageView.image = image
-            rightImageView.image = image
+        if infiniteScroll != .disabled {
+            leadingImageView.image = image
+            trailingImageView.image = image
         }
     }
     
     private func updateContentSize(with image: UIImage) {
         let size: CGSize
-        if infiniteScroll {
-            size = CGSize(width: image.size.width * 3, height: image.size.height)
-        } else {
+        switch infiniteScroll {
+        case .disabled:
             size = CGSize(width: image.size.width, height: image.size.height)
+        case .horizontal:
+            size = CGSize(width: image.size.width * 3, height: image.size.height)
+        case .vertical:
+            size = CGSize(width: image.size.width, height: image.size.height * 3)
         }
         let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         stackView.frame = frame
