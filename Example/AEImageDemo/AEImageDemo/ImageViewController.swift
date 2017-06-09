@@ -16,7 +16,7 @@ class ImageViewController: AEImageViewController {
     override var motionSettings: MotionSettings {
         var settings = MotionSettings()
         settings.isEnabled = true
-        settings.rotationFactor = 0.75
+        settings.sensitivity = 0.75
         return settings
     }
     

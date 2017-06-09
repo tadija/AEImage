@@ -25,11 +25,6 @@
 import UIKit
 import CoreMotion
 
-public protocol AEImageMotionDelegate: class {
-    var motionSettings: AEImageScrollView.MotionSettings { get }
-    func contentOffset(with gyroData: CMGyroData) -> CGPoint?
-}
-
 /**
     This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
     It will automatically update to correct zoom scale (depending on `displayMode`) whenever its `frame` changes.
@@ -42,13 +37,6 @@ public protocol AEImageMotionDelegate: class {
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelegate {
     
     // MARK: - Types
-    
-    public struct MotionSettings {
-        public var isEnabled: Bool = false
-        public var minimumThreshold: CGFloat = 0.1
-        public var rotationFactor: CGFloat = 0.5
-        public init() {}
-    }
     
     /// Modes for calculating zoom scale.
     public enum DisplayMode {

@@ -25,6 +25,19 @@
 import UIKit
 import CoreMotion
 
+/// Gyro motion settings
+public struct MotionSettings {
+    public var isEnabled: Bool = false
+    public var threshold: CGFloat = 0.1
+    public var sensitivity: CGFloat = 0.5
+    public init() {}
+}
+
+public protocol AEImageMotionDelegate: class {
+    var motionSettings: MotionSettings { get }
+    func contentOffset(with gyroData: CMGyroData) -> CGPoint?
+}
+
 /**
     Minimalistic view controller which just adds `AEImageScrollView`
     to its view hierarchy, and has `image` property to set its content.
@@ -34,8 +47,6 @@ import CoreMotion
     but it might also be subclassed for custom funcionality or handling gyro motion data etc.
 */
 open class AEImageViewController: UIViewController, AEImageMotionDelegate {
-    
-    public typealias MotionSettings = AEImageScrollView.MotionSettings
     
     // MARK: - Outlets
     
@@ -106,9 +117,9 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
             rotationRate = CGFloat(gyroData.rotationRate.y)
         }
         
-        if abs(rotationRate) >= settings.minimumThreshold {
+        if abs(rotationRate) >= settings.threshold {
             let maxOffsetX = imageScrollView.contentSize.width - imageScrollView.bounds.size.width
-            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * settings.rotationFactor
+            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * settings.sensitivity
             var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
             
             if offsetX > maxOffsetX {
