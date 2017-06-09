@@ -24,6 +24,11 @@
 
 import UIKit
 
+public protocol AEImageMotionDelegate: class {
+    var isMotionEnabled: Bool { get }
+    func contentOffset(with gyroData: CMGyroData) -> CGPoint?
+}
+
 /**
     This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
     It will automatically update to correct zoom scale (depending on `displayMode`) whenever its `frame` changes.
@@ -33,7 +38,7 @@ import UIKit
  
     It's also possible to enable `infiniteScroll` effect (might be useful for 360 panorama images or similar).
 */
-open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
+open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelegate {
     
     // MARK: - Types
     
@@ -115,6 +120,9 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
     }
     
+    private let motion = AEMotion()
+    weak var motionDelegate: AEImageMotionDelegate?
+    
     // MARK: - Init
     
     override public init(frame: CGRect) {
@@ -189,6 +197,16 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
     }
     
+    open override func didMoveToWindow() {
+        super.didMoveToWindow()
+        addObservers()
+    }
+    
+    open override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        removeObservers()
+    }
+    
     // MARK: - API
     
     /// This will center content offset horizontally and verticaly.
@@ -200,12 +218,44 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         setContentOffset(offset, animated: false)
     }
     
+    public func configureMotion() {
+        motion.isEnabled = motionDelegate?.isMotionEnabled ?? false
+    }
+    
+    // MARK: AEMotionDelegate
+    
+    public func didUpdate(gyroData: CMGyroData) {
+        guard let offset = motionDelegate?.contentOffset(with: gyroData) else {
+            return
+        }
+        let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { () in
+            self.setContentOffset(offset, animated: false)
+        }, completion: nil)
+    }
+    
     // MARK: - UIScrollViewDelegate
     
     /// View used for zooming must be `stackView`.
     /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return stackView
+    }
+    
+    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        disableMotion()
+    }
+    
+    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        enableMotion()
+    }
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        disableMotion()
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        enableMotion()
     }
     
     // MARK: - Helpers
@@ -220,7 +270,9 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
         bouncesZoom = true
+        
         delegate = self
+        motion.delegate = self
     }
     
     private func configureStackView() {
@@ -356,6 +408,28 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
             
             // restore offset
             contentOffset = offset
+        }
+    }
+    
+    private func addObservers() {
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(enableMotion), name: .UIApplicationDidBecomeActive, object: nil)
+        center.addObserver(self, selector: #selector(disableMotion), name: .UIApplicationWillResignActive, object: nil)
+    }
+    
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func enableMotion() {
+        if motionDelegate?.isMotionEnabled ?? false {
+            motion.isEnabled = true
+        }
+    }
+    
+    @objc private func disableMotion() {
+        if motionDelegate?.isMotionEnabled ?? false {
+            motion.isEnabled = false
         }
     }
     

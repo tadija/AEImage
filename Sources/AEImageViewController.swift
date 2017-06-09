@@ -32,7 +32,7 @@ import UIKit
     It may be used as is from code or storyboard,
     but it's meant to be subclassed for custom funcionality, handling gyro motion data etc.
 */
-open class AEImageViewController: UIViewController {
+open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
     // MARK: - Outlets
     
@@ -48,11 +48,6 @@ open class AEImageViewController: UIViewController {
         }
     }
     
-    /// Instance of `AEMotion`, become its `delegate` for getting gyro updates.
-    open let motion = AEMotion()
-    
-    private var initialLayout = true
-    
     // MARK: - Lifecycle
     
     /// Image is set on `imageScrollView` which is then added as a subview to this view controller's view.
@@ -62,12 +57,13 @@ open class AEImageViewController: UIViewController {
         configureImageScrollView()
     }
     
-    private func configureImageScrollView() {
-        imageScrollView.image = image
-        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageScrollView.frame = view.frame
-        view.insertSubview(imageScrollView, at: 0)
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        imageScrollView.configureMotion()
     }
+    
+    private var initialLayout = true
     
     /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (initial layout).
     override open func viewDidLayoutSubviews() {
@@ -76,6 +72,55 @@ open class AEImageViewController: UIViewController {
         if initialLayout {
             initialLayout = false
             imageScrollView.centerContentOffset()
+        }
+    }
+    
+    // MARK: - Helpers
+    
+    private func configureImageScrollView() {
+        imageScrollView.image = image
+        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageScrollView.frame = view.frame
+        view.insertSubview(imageScrollView, at: 0)
+        imageScrollView.motionDelegate = self
+    }
+    
+    // MARK: - AEImageMotionDelegate
+    
+    open var isMotionEnabled: Bool {
+        return false
+    }
+    
+    private let motionMinimumThreshold: CGFloat = 0.1
+    private let motionRateFactor: CGFloat = 0.5
+    
+    open func contentOffset(with gyroData: CMGyroData) -> CGPoint? {
+        let orientation = UIApplication.shared.statusBarOrientation
+        let rotationRate: CGFloat
+        
+        if orientation.isLandscape {
+            if orientation == .landscapeLeft {
+                rotationRate = CGFloat(-gyroData.rotationRate.x)
+            } else {
+                rotationRate = CGFloat(gyroData.rotationRate.x)
+            }
+        } else {
+            rotationRate = CGFloat(gyroData.rotationRate.y)
+        }
+        
+        if abs(rotationRate) >= motionMinimumThreshold {
+            let maxOffsetX = imageScrollView.contentSize.width - imageScrollView.bounds.size.width
+            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * motionRateFactor
+            var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
+            if offsetX > maxOffsetX {
+                offsetX = maxOffsetX
+            } else if offsetX < 0.0 {
+                offsetX = 0.0
+            }
+            let offset = CGPoint(x: offsetX, y: imageScrollView.contentOffset.y)
+            return offset
+        } else {
+            return nil
         }
     }
     
