@@ -23,6 +23,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 public protocol AEImageMotionDelegate: class {
     var isMotionEnabled: Bool { get }
@@ -105,6 +106,14 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         }
     }
     
+    /// Gyro motion delegate
+    weak var motionDelegate: AEImageMotionDelegate?
+    
+    /// Gyro motion manager
+    private let motion = AEMotion()
+    
+    // MARK: - Override
+    
     /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
         willSet {
@@ -120,8 +129,42 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         }
     }
     
-    private let motion = AEMotion()
-    weak var motionDelegate: AEImageMotionDelegate?
+    // MARK: Helpers
+    
+    private var pointToCenterAfterResize: CGPoint?
+    
+    private func prepareToResize() {
+        let boundsCenter = CGPoint(x: bounds.midX, y: bounds.midY)
+        pointToCenterAfterResize = convert(boundsCenter, to: stackView)
+    }
+    
+    private func recoverFromResizing() {
+        if let pointToCenter = pointToCenterAfterResize {
+            // calculate min and max content offset
+            let minimumContentOffset = CGPoint.zero
+            let maxOffsetX = contentSize.width - bounds.size.width
+            let maxOffsetY = contentSize.height - bounds.size.height
+            let maximumContentOffset = CGPoint(x: maxOffsetX, y: maxOffsetY)
+            
+            // convert our desired center point back to our own coordinate space
+            let boundsCenter = convert(pointToCenter, from: stackView)
+            
+            // calculate the content offset that would yield that center point
+            let offsetX = boundsCenter.x - bounds.size.width / 2.0
+            let offsetY = boundsCenter.y - bounds.size.height / 2.0
+            var offset = CGPoint(x: offsetX, y: offsetY)
+            
+            // calculate offset, adjusted to be within the allowable range
+            var realMaxOffset = min(maximumContentOffset.x, offset.x)
+            offset.x = max(minimumContentOffset.x, realMaxOffset)
+            
+            realMaxOffset = min(maximumContentOffset.y, offset.y)
+            offset.y = max(minimumContentOffset.y, realMaxOffset)
+            
+            // restore offset
+            contentOffset = offset
+        }
+    }
     
     // MARK: - Init
     
@@ -145,120 +188,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         updateUI()
     }
     
-    // MARK: - Lifecycle
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        fakeContentOffsetIfNeeded()
-    }
-    
-    private func fakeContentOffsetIfNeeded() {
-        var newOffset: CGPoint?
-        let xOffset = contentOffset.x
-        let yOffset = contentOffset.y
-        let width = contentSize.width / 3
-        let height = contentSize.height / 3
-        
-        switch infiniteScroll {
-        case .disabled:
-            break
-        case .horizontal:
-            let maxOffset = width * 2
-            if xOffset > maxOffset {
-                let diff = xOffset - maxOffset
-                let newX = width + diff
-                newOffset = CGPoint(x: newX, y: yOffset)
-            }
-            let minOffset = width - bounds.width
-            if xOffset < minOffset {
-                let diff = minOffset - xOffset
-                let newX = width + minOffset - diff
-                newOffset = CGPoint(x: newX, y: yOffset)
-            }
-        case .vertical:
-            let maxOffset = height * 2
-            if yOffset > maxOffset {
-                let diff = yOffset - maxOffset
-                let newY = height + diff
-                newOffset = CGPoint(x: xOffset, y: newY)
-            }
-            let minOffset = height - bounds.height
-            if yOffset < minOffset {
-                let diff = minOffset - yOffset
-                let newY = height + minOffset - diff
-                newOffset = CGPoint(x: xOffset, y: newY)
-            }
-        }
-        
-        if let newOffset = newOffset {
-            UIView.performWithoutAnimation {
-                contentOffset = newOffset
-            }
-        }
-    }
-    
-    open override func didMoveToWindow() {
-        super.didMoveToWindow()
-        addObservers()
-    }
-    
-    open override func willMove(toWindow newWindow: UIWindow?) {
-        super.willMove(toWindow: newWindow)
-        removeObservers()
-    }
-    
-    // MARK: - API
-    
-    /// This will center content offset horizontally and verticaly.
-    /// It's also called whenever `image` property is set.
-    open func centerContentOffset() {
-        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
-        let offset = CGPoint(x: centerX, y: centerY)
-        setContentOffset(offset, animated: false)
-    }
-    
-    public func configureMotion() {
-        motion.isEnabled = motionDelegate?.isMotionEnabled ?? false
-    }
-    
-    // MARK: AEMotionDelegate
-    
-    public func didUpdate(gyroData: CMGyroData) {
-        guard let offset = motionDelegate?.contentOffset(with: gyroData) else {
-            return
-        }
-        let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { () in
-            self.setContentOffset(offset, animated: false)
-        }, completion: nil)
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    /// View used for zooming must be `stackView`.
-    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return stackView
-    }
-    
-    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        disableMotion()
-    }
-    
-    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        enableMotion()
-    }
-    
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        disableMotion()
-    }
-    
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        enableMotion()
-    }
-    
-    // MARK: - Helpers
+    // MARK: Helpers
     
     private func configureSelf() {
         configureScrollView()
@@ -376,38 +306,67 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         zoomScale = minimumZoomScale
     }
     
-    private var pointToCenterAfterResize: CGPoint?
+    // MARK: - Lifecycle
     
-    private func prepareToResize() {
-        let boundsCenter = CGPoint(x: bounds.midX, y: bounds.midY)
-        pointToCenterAfterResize = convert(boundsCenter, to: stackView)
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        fakeContentOffsetIfNeeded()
     }
     
-    private func recoverFromResizing() {
-        if let pointToCenter = pointToCenterAfterResize {
-            // calculate min and max content offset
-            let minimumContentOffset = CGPoint.zero
-            let maxOffsetX = contentSize.width - bounds.size.width
-            let maxOffsetY = contentSize.height - bounds.size.height
-            let maximumContentOffset = CGPoint(x: maxOffsetX, y: maxOffsetY)
-            
-            // convert our desired center point back to our own coordinate space
-            let boundsCenter = convert(pointToCenter, from: stackView)
-            
-            // calculate the content offset that would yield that center point
-            let offsetX = boundsCenter.x - bounds.size.width / 2.0
-            let offsetY = boundsCenter.y - bounds.size.height / 2.0
-            var offset = CGPoint(x: offsetX, y: offsetY)
-            
-            // calculate offset, adjusted to be within the allowable range
-            var realMaxOffset = min(maximumContentOffset.x, offset.x)
-            offset.x = max(minimumContentOffset.x, realMaxOffset)
-            
-            realMaxOffset = min(maximumContentOffset.y, offset.y)
-            offset.y = max(minimumContentOffset.y, realMaxOffset)
-            
-            // restore offset
-            contentOffset = offset
+    open override func didMoveToWindow() {
+        super.didMoveToWindow()
+        addObservers()
+    }
+    
+    open override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        removeObservers()
+    }
+    
+    // MARK: Helpers
+    
+    private func fakeContentOffsetIfNeeded() {
+        var newOffset: CGPoint?
+        let xOffset = contentOffset.x
+        let yOffset = contentOffset.y
+        let width = contentSize.width / 3
+        let height = contentSize.height / 3
+        
+        switch infiniteScroll {
+        case .disabled:
+            break
+        case .horizontal:
+            let maxOffset = width * 2
+            if xOffset > maxOffset {
+                let diff = xOffset - maxOffset
+                let newX = width + diff
+                newOffset = CGPoint(x: newX, y: yOffset)
+            }
+            let minOffset = width - bounds.width
+            if xOffset < minOffset {
+                let diff = minOffset - xOffset
+                let newX = width + minOffset - diff
+                newOffset = CGPoint(x: newX, y: yOffset)
+            }
+        case .vertical:
+            let maxOffset = height * 2
+            if yOffset > maxOffset {
+                let diff = yOffset - maxOffset
+                let newY = height + diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+            let minOffset = height - bounds.height
+            if yOffset < minOffset {
+                let diff = minOffset - yOffset
+                let newY = height + minOffset - diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+        }
+        
+        if let newOffset = newOffset {
+            UIView.performWithoutAnimation {
+                contentOffset = newOffset
+            }
         }
     }
     
@@ -421,16 +380,63 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         NotificationCenter.default.removeObserver(self)
     }
     
-    @objc private func enableMotion() {
+    // MARK: - API
+    
+    /// This will center content offset horizontally and verticaly.
+    /// It's also called whenever `image` property is set.
+    open func centerContentOffset() {
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
+        let offset = CGPoint(x: centerX, y: centerY)
+        setContentOffset(offset, animated: false)
+    }
+    
+    @objc public func enableMotion() {
         if motionDelegate?.isMotionEnabled ?? false {
             motion.isEnabled = true
         }
     }
     
-    @objc private func disableMotion() {
+    @objc public func disableMotion() {
         if motionDelegate?.isMotionEnabled ?? false {
             motion.isEnabled = false
         }
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return stackView
+    }
+    
+    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        disableMotion()
+    }
+    
+    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        enableMotion()
+    }
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        disableMotion()
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        enableMotion()
+    }
+    
+    // MARK: - AEMotionDelegate
+    
+    public func didUpdate(gyroData: CMGyroData) {
+        guard let offset = motionDelegate?.contentOffset(with: gyroData) else {
+            return
+        }
+        let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { () in
+            self.setContentOffset(offset, animated: false)
+        }, completion: nil)
     }
     
 }

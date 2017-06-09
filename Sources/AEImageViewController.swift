@@ -23,14 +23,15 @@
 //
 
 import UIKit
+import CoreMotion
 
 /**
     Minimalistic view controller which just adds `AEImageScrollView`
     to its view hierarchy, and has `image` property to set its content.
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
-    It may be used as is from code or storyboard,
-    but it's meant to be subclassed for custom funcionality, handling gyro motion data etc.
+    It may be used out of the box from code or storyboard,
+    but it might also be subclassed for custom funcionality or handling gyro motion data etc.
 */
 open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
@@ -50,17 +51,24 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
     // MARK: - Lifecycle
     
-    /// Image is set on `imageScrollView` which is then added as a subview to this view controller's view.
     override open func viewDidLoad() {
         super.viewDidLoad()
         
         configureImageScrollView()
     }
     
+    private func configureImageScrollView() {
+        imageScrollView.image = image
+        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageScrollView.frame = view.frame
+        imageScrollView.motionDelegate = self
+        view.insertSubview(imageScrollView, at: 0)
+    }
+    
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        imageScrollView.configureMotion()
+        imageScrollView.enableMotion()
     }
     
     private var initialLayout = true
@@ -73,16 +81,6 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
             initialLayout = false
             imageScrollView.centerContentOffset()
         }
-    }
-    
-    // MARK: - Helpers
-    
-    private func configureImageScrollView() {
-        imageScrollView.image = image
-        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageScrollView.frame = view.frame
-        view.insertSubview(imageScrollView, at: 0)
-        imageScrollView.motionDelegate = self
     }
     
     // MARK: - AEImageMotionDelegate
