@@ -29,13 +29,13 @@ import CoreMotion
 public struct MotionSettings {
     public var isEnabled: Bool = false
     public var threshold: CGFloat = 0.1
-    public var sensitivity: CGFloat = 0.5
+    public var sensitivity: CGFloat = 1.0
     public init() {}
 }
 
 public protocol AEImageMotionDelegate: class {
     var motionSettings: MotionSettings { get }
-    func contentOffset(with gyroData: CMGyroData) -> CGPoint?
+    func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint?
 }
 
 /**
@@ -102,8 +102,25 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
         return MotionSettings()
     }
     
-    open func contentOffset(with gyroData: CMGyroData) -> CGPoint? {
+    open func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint? {
         let settings = motionSettings
+        let rotationRate = self.rotationRate(with: gyroData)
+        
+        guard abs(rotationRate) >= settings.threshold else {
+            return nil
+        }
+
+        let motionRate = motionFactor * settings.sensitivity
+        var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
+        offsetX = constrainedOffsetX(with: offsetX)
+        
+        let offset = CGPoint(x: offsetX, y: imageScrollView.contentOffset.y)
+        return offset
+    }
+    
+    // MARK: Helpers
+    
+    private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
         let orientation = UIApplication.shared.statusBarOrientation
         let rotationRate: CGFloat
         
@@ -117,21 +134,33 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
             rotationRate = CGFloat(gyroData.rotationRate.y)
         }
         
-        if abs(rotationRate) >= settings.threshold {
-            let maxOffsetX = imageScrollView.contentSize.width - imageScrollView.bounds.size.width
-            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * settings.sensitivity
-            var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
-            
-            if offsetX > maxOffsetX {
-                offsetX = maxOffsetX
-            } else if offsetX < 0.0 {
-                offsetX = 0.0
-            }
-            
-            let offset = CGPoint(x: offsetX, y: imageScrollView.contentOffset.y)
-            return offset
+        return rotationRate
+    }
+    
+    private var motionFactor: CGFloat {
+        let boundsSize = imageScrollView.bounds.size
+        let contentSize = imageScrollView.contentSize
+        
+        let motionFactor: CGFloat
+        if imageScrollView.infiniteScroll == .disabled {
+            motionFactor = contentSize.width / boundsSize.width
         } else {
-            return nil
+            motionFactor = (contentSize.width / 3) / boundsSize.width
+        }
+        
+        return motionFactor
+    }
+    
+    private func constrainedOffsetX(with offsetX: CGFloat) -> CGFloat {
+        let minOffsetX: CGFloat = 0.0
+        let maxOffsetX = imageScrollView.contentSize.width - imageScrollView.bounds.size.width
+        
+        if offsetX > maxOffsetX {
+            return maxOffsetX
+        } else if offsetX < minOffsetX {
+            return minOffsetX
+        } else {
+            return offsetX
         }
     }
     

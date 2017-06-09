@@ -418,6 +418,12 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         disableMotion()
     }
     
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            enableMotion()
+        }
+    }
+    
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         enableMotion()
     }
@@ -425,7 +431,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     // MARK: - AEMotionDelegate
     
     public func didUpdate(gyroData: CMGyroData) {
-        guard let offset = motionDelegate?.contentOffset(with: gyroData) else {
+        guard let offset = motionDelegate?.calculatedContentOffset(with: gyroData) else {
             return
         }
         let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
