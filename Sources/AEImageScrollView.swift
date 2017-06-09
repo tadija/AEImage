@@ -26,7 +26,7 @@ import UIKit
 import CoreMotion
 
 public protocol AEImageMotionDelegate: class {
-    var isMotionEnabled: Bool { get }
+    var motionSettings: AEImageScrollView.MotionSettings { get }
     func contentOffset(with gyroData: CMGyroData) -> CGPoint?
 }
 
@@ -42,6 +42,13 @@ public protocol AEImageMotionDelegate: class {
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelegate {
     
     // MARK: - Types
+    
+    public struct MotionSettings {
+        public var isEnabled: Bool = false
+        public var minimumThreshold: CGFloat = 0.1
+        public var rotationFactor: CGFloat = 0.5
+        public init() {}
+    }
     
     /// Modes for calculating zoom scale.
     public enum DisplayMode {
@@ -392,13 +399,13 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     }
     
     @objc public func enableMotion() {
-        if motionDelegate?.isMotionEnabled ?? false {
+        if motionDelegate?.motionSettings.isEnabled ?? false {
             motion.isEnabled = true
         }
     }
     
     @objc public func disableMotion() {
-        if motionDelegate?.isMotionEnabled ?? false {
+        if motionDelegate?.motionSettings.isEnabled ?? false {
             motion.isEnabled = false
         }
     }

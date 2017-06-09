@@ -13,8 +13,11 @@ class ImageViewController: AEImageViewController {
     
     // MARK: AEImageMotionDelegate
     
-    override var isMotionEnabled: Bool {
-        return true
+    override var motionSettings: MotionSettings {
+        var settings = MotionSettings()
+        settings.isEnabled = true
+        settings.rotationFactor = 0.75
+        return settings
     }
     
     // MARK: - Lifecycle

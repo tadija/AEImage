@@ -35,6 +35,8 @@ import CoreMotion
 */
 open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
+    public typealias MotionSettings = AEImageScrollView.MotionSettings
+    
     // MARK: - Outlets
     
     /// Zoomable image view which displays the image.
@@ -85,14 +87,12 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
     // MARK: - AEImageMotionDelegate
     
-    open var isMotionEnabled: Bool {
-        return false
+    open var motionSettings: MotionSettings {
+        return MotionSettings()
     }
     
-    private let motionMinimumThreshold: CGFloat = 0.1
-    private let motionRateFactor: CGFloat = 0.5
-    
     open func contentOffset(with gyroData: CMGyroData) -> CGPoint? {
+        let settings = motionSettings
         let orientation = UIApplication.shared.statusBarOrientation
         let rotationRate: CGFloat
         
@@ -106,15 +106,17 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
             rotationRate = CGFloat(gyroData.rotationRate.y)
         }
         
-        if abs(rotationRate) >= motionMinimumThreshold {
+        if abs(rotationRate) >= settings.minimumThreshold {
             let maxOffsetX = imageScrollView.contentSize.width - imageScrollView.bounds.size.width
-            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * motionRateFactor
+            let motionRate = imageScrollView.contentSize.width / imageScrollView.bounds.size.width * settings.rotationFactor
             var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
+            
             if offsetX > maxOffsetX {
                 offsetX = maxOffsetX
             } else if offsetX < 0.0 {
                 offsetX = 0.0
             }
+            
             let offset = CGPoint(x: offsetX, y: imageScrollView.contentOffset.y)
             return offset
         } else {
