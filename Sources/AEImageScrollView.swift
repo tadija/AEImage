@@ -25,12 +25,14 @@
 import UIKit
 
 /**
- This is base class which consists from `UIImageView` inside `UIScrollView`.
- It will update current zoom scale on `imageView` whenever its `frame` changes.
+    This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
+    It will automatically update to correct zoom scale (depending on `displayMode`) whenever its `frame` changes.
+
+    It may be used directly from code or from storyboard with auto layout,
+    just set its `image` and `displayMode` properties and it will do the rest.
  
- It may be used directly from code or storyboard with auto layout,
- just set its `image` property and it will do the rest.
- */
+    It's also possible to enable `infiniteScroll` effect (might be useful for 360 panorama images or similar).
+*/
 open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     // MARK: - Types
@@ -39,24 +41,37 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     public enum DisplayMode {
         /// switches between `fit` and `fill` depending of the image ratio.
         case automatic
-        
         /// Fits entire image.
         case fit
-        
         /// Fills entire `imageView`.
         case fill
-        
         /// Fills width of the `imageView`.
         case fillWidth
-        
         /// Fills height of the `imageView`.
         case fillHeight
     }
     
+    /// Modes for infinite scroll effect.
+    public enum InfiniteScroll {
+        /// Disabled infinite scroll effect.
+        case disabled
+        /// Horizontal infinite scroll effect.
+        case horizontal
+        /// Vertical infinite scroll effect.
+        case vertical
+    }
+    
     // MARK: - Outlets
+    
+    /// Stack view is placeholder for imageView.
+    public let stackView = UIStackView()
     
     /// Image view which displays the image.
     public let imageView = UIImageView()
+    
+    /// Duplicated image views for faking `infiniteScroll` effect.
+    private let leadingImageView = UIImageView()
+    private let trailingImageView = UIImageView()
     
     // MARK: - Properties
     
@@ -70,8 +85,17 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
     /// Mode to be used when calculating zoom scale. Default value is `.automatic`.
     open var displayMode: DisplayMode = .automatic {
         didSet {
-            if displayMode != oldValue {
-                configureZoomScales()
+            if displayMode != oldValue, let image = image {
+                updateZoomScales(with: image)
+            }
+        }
+    }
+    
+    /// Infinite scroll effect (think of 360 panorama). Defaults to `false`.
+    open var infiniteScroll: InfiniteScroll = .disabled {
+        didSet {
+            if infiniteScroll != oldValue {
+                resetStackView()
             }
         }
     }
@@ -84,8 +108,8 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
             }
         }
         didSet {
-            if !frame.size.equalTo(oldValue.size) {
-                configureZoomScales()
+            if !frame.size.equalTo(oldValue.size), let image = image {
+                updateZoomScales(with: image)
                 recoverFromResizing()
             }
         }
@@ -113,38 +137,133 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         updateUI()
     }
     
+    // MARK: - Lifecycle
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        fakeContentOffsetIfNeeded()
+    }
+    
+    private func fakeContentOffsetIfNeeded() {
+        var newOffset: CGPoint?
+        let xOffset = contentOffset.x
+        let yOffset = contentOffset.y
+        let width = contentSize.width / 3
+        let height = contentSize.height / 3
+        
+        switch infiniteScroll {
+        case .disabled:
+            break
+        case .horizontal:
+            let maxOffset = width * 2
+            if xOffset > maxOffset {
+                let diff = xOffset - maxOffset
+                let newX = width + diff
+                newOffset = CGPoint(x: newX, y: yOffset)
+            }
+            let minOffset = width - bounds.width
+            if xOffset < minOffset {
+                let diff = minOffset - xOffset
+                let newX = width + minOffset - diff
+                newOffset = CGPoint(x: newX, y: yOffset)
+            }
+        case .vertical:
+            let maxOffset = height * 2
+            if yOffset > maxOffset {
+                let diff = yOffset - maxOffset
+                let newY = height + diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+            let minOffset = height - bounds.height
+            if yOffset < minOffset {
+                let diff = minOffset - yOffset
+                let newY = height + minOffset - diff
+                newOffset = CGPoint(x: xOffset, y: newY)
+            }
+        }
+        
+        if let newOffset = newOffset {
+            UIView.performWithoutAnimation {
+                contentOffset = newOffset
+            }
+        }
+    }
+    
+    // MARK: - API
+    
+    /// This will center content offset horizontally and verticaly.
+    /// It's also called whenever `image` property is set.
+    open func centerContentOffset() {
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
+        let offset = CGPoint(x: centerX, y: centerY)
+        setContentOffset(offset, animated: false)
+    }
+    
     // MARK: - UIScrollViewDelegate
     
-    /// View used for zooming is `imageView`, be sure to keep that logic.
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        return stackView
     }
     
     // MARK: - Helpers
     
     private func configureSelf() {
+        configureScrollView()
+        configureStackView()
+    }
+    
+    private func configureScrollView() {
         backgroundColor = UIColor.black
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
         bouncesZoom = true
         delegate = self
-        
-        addSubview(imageView)
+    }
+    
+    private func configureStackView() {
+        resetStackView()
+        addSubview(stackView)
+    }
+    
+    private func resetStackView() {
+        stackView.arrangedSubviews.forEach { stackView.removeArrangedSubview($0) }
+        switch infiniteScroll {
+        case .disabled:
+            stackView.addArrangedSubview(imageView)
+        case .horizontal:
+            stackView.axis = .horizontal
+            stackView.addArrangedSubview(leadingImageView)
+            stackView.addArrangedSubview(imageView)
+            stackView.addArrangedSubview(trailingImageView)
+        case .vertical:
+            stackView.axis = .vertical
+            stackView.addArrangedSubview(leadingImageView)
+            stackView.addArrangedSubview(imageView)
+            stackView.addArrangedSubview(trailingImageView)
+        }
     }
     
     private func updateUI() {
         resetImage()
         resetZoomScales()
         
-        configureImage()
-        configureZoomScales()
+        if let image = image {
+            updateImage(image)
+            updateContentSize(with: image)
+            updateZoomScales(with: image)
+        }
         
         centerContentOffset()
     }
     
     private func resetImage() {
-        imageView.image = nil
         contentSize = CGSize.zero
+        imageView.image = nil
+        leadingImageView.image = nil
+        trailingImageView.image = nil
     }
     
     private func resetZoomScales() {
@@ -153,16 +272,30 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         zoomScale = 1.0
     }
     
-    private func configureImage() {
-        guard let image = image else { return }
+    private func updateImage(_ image: UIImage) {
         imageView.image = image
-        imageView.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        contentSize = image.size
+        if infiniteScroll != .disabled {
+            leadingImageView.image = image
+            trailingImageView.image = image
+        }
     }
     
-    private func configureZoomScales() {
-        guard let image = image else { return }
-        
+    private func updateContentSize(with image: UIImage) {
+        let size: CGSize
+        switch infiniteScroll {
+        case .disabled:
+            size = CGSize(width: image.size.width, height: image.size.height)
+        case .horizontal:
+            size = CGSize(width: image.size.width * 3, height: image.size.height)
+        case .vertical:
+            size = CGSize(width: image.size.width, height: image.size.height * 3)
+        }
+        let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        stackView.frame = frame
+        contentSize = size
+    }
+    
+    private func updateZoomScales(with image: UIImage) {
         // get scales needed to perfectly fit the image
         let xScale = bounds.size.width / image.size.width
         let yScale = bounds.size.height / image.size.height
@@ -191,24 +324,11 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
         zoomScale = minimumZoomScale
     }
     
-    // MARK: - API
-    
-    /// This will center content offset horizontally and verticaly.
-    /// It's also called whenever `image` property is set.
-    open func centerContentOffset() {
-        let centerX = (imageView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (imageView.frame.size.height - bounds.size.height) / 2.0
-        let offset = CGPoint(x: centerX, y: centerY)
-        setContentOffset(offset, animated: false)
-    }
-    
-    // MARK: - Helpers
-    
     private var pointToCenterAfterResize: CGPoint?
     
     private func prepareToResize() {
         let boundsCenter = CGPoint(x: bounds.midX, y: bounds.midY)
-        pointToCenterAfterResize = convert(boundsCenter, to: imageView)
+        pointToCenterAfterResize = convert(boundsCenter, to: stackView)
     }
     
     private func recoverFromResizing() {
@@ -220,7 +340,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate {
             let maximumContentOffset = CGPoint(x: maxOffsetX, y: maxOffsetY)
             
             // convert our desired center point back to our own coordinate space
-            let boundsCenter = convert(pointToCenter, from: imageView)
+            let boundsCenter = convert(pointToCenter, from: stackView)
             
             // calculate the content offset that would yield that center point
             let offsetX = boundsCenter.x - bounds.size.width / 2.0
