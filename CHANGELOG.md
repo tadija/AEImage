@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.1.0
+
+- Improvements and refactoring
+- Removed AE prefix from type names
+- Enabled framework to be used in app extensions
+- Improved inline documentation
+
 ## Version 2.0.0
 
 - Major refactoring and improvements
