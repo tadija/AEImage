@@ -63,9 +63,7 @@ open class AEImageViewController: UIViewController, AEMotionScrollDelegate {
     
     // MARK: - AEImageMotionDelegate
     
-    open var motionSettings: MotionSettings {
-        return MotionSettings()
-    }
+    open var motionSettings = MotionSettings()
     
     open func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint? {
         let settings = motionSettings

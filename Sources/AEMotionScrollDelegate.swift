@@ -3,7 +3,7 @@ import CoreMotion
 /// Conformer to this protocol should provide gyro motion settings and calculate content offset based on gyro data.
 public protocol AEMotionScrollDelegate: class {
     /// Gyro motion settings
-    var motionSettings: MotionSettings { get }
+    var motionSettings: MotionSettings { get set }
     /// Calculated content offset to which `ImageScrollView` should be moved (based on gyro data).
     func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint?
 }

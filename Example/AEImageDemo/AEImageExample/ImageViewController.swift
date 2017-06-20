@@ -11,21 +11,17 @@ import AEImage
 
 class ImageViewController: AEImageViewController {
     
-    // MARK: AEImageMotionDelegate
-    
-    override var motionSettings: MotionSettings {
-        var settings = MotionSettings()
-        settings.isEnabled = true
-        settings.sensitivity = 1.5
-        return settings
-    }
-    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        imageScrollView.displayMode = .fillHeight
         imageScrollView.infiniteScroll = .horizontal
+        
+        motionSettings.isEnabled = true
+        motionSettings.sensitivity = 1.5
+        
         image = UIImage(named: "demo1")
     }
 
