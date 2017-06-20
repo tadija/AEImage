@@ -41,6 +41,7 @@
 		8B0037D81D8D7C0000017853 = {
 			isa = PBXGroup;
 			children = (
+				8B0037F71D8D7D6100017853 /* Package.swift */,
 				8B0037E41D8D7C0000017853 /* Sources */,
 				8B0037E31D8D7C0000017853 /* Products */,
 				8B0037F91D8D7D6400017853 /* Supporting Files */,
@@ -78,11 +79,10 @@
 		8B0037F91D8D7D6400017853 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8B0037F41D8D7D6000017853 /* AEImage.podspec */,
-				8B0037F51D8D7D6100017853 /* CHANGELOG.md */,
 				8B0037F61D8D7D6100017853 /* LICENSE */,
-				8B0037F71D8D7D6100017853 /* Package.swift */,
 				8B0037F81D8D7D6100017853 /* README.md */,
+				8B0037F51D8D7D6100017853 /* CHANGELOG.md */,
+				8B0037F41D8D7D6000017853 /* AEImage.podspec */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

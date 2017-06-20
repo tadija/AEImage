@@ -91,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				8B0038061D8D836500017853 /* AppDelegate.swift */,
+				8B00380A1D8D836500017853 /* Main.storyboard */,
 				8B0038081D8D836500017853 /* ImageViewController.swift */,
 				8B00381F1D8D83F300017853 /* Supporting Files */,
 			);
@@ -108,9 +109,8 @@
 		8B00381F1D8D83F300017853 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8B00380A1D8D836500017853 /* Main.storyboard */,
-				8B00380D1D8D836500017853 /* Assets.xcassets */,
 				8B00380F1D8D836500017853 /* LaunchScreen.storyboard */,
+				8B00380D1D8D836500017853 /* Assets.xcassets */,
 				8B0038121D8D836500017853 /* Info.plist */,
 			);
 			name = "Supporting Files";
