@@ -86,14 +86,14 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     // MARK: Helpers
     
     private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
-        let orientation = UIApplication.shared.statusBarOrientation
+        let orientation = UIDevice.current.orientation
         let rotationRate: CGFloat
-        
-        if orientation.isLandscape {
+
+        if UIDeviceOrientationIsLandscape(orientation) {
             if orientation == .landscapeLeft {
-                rotationRate = CGFloat(-gyroData.rotationRate.x)
-            } else {
                 rotationRate = CGFloat(gyroData.rotationRate.x)
+            } else {
+                rotationRate = CGFloat(-gyroData.rotationRate.x)
             }
         } else {
             rotationRate = CGFloat(gyroData.rotationRate.y)
