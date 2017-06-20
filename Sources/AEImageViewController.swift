@@ -1,26 +1,13 @@
 import UIKit
 import CoreMotion
 
-/// Gyro motion settings
-public struct MotionSettings {
-    public var isEnabled: Bool = false
-    public var threshold: CGFloat = 0.1
-    public var sensitivity: CGFloat = 1.0
-    public init() {}
-}
-
-public protocol AEImageMotionDelegate: class {
-    var motionSettings: MotionSettings { get }
-    func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint?
-}
-
 /**
     Minimalistic view controller which just adds `AEImageScrollView`
     to its view hierarchy, and has `image` property to set its content.
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
-    It may be used out of the box from code or storyboard,
-    but it might also be subclassed for custom funcionality or handling gyro motion data etc.
+    It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
+    It provides default logic for calculating content offset based on gyro data which can be overriden if needed.
 */
 open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     
@@ -46,21 +33,11 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
         configureImageScrollView()
     }
     
-    private func configureImageScrollView() {
-        imageScrollView.image = image
-        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageScrollView.frame = view.frame
-        imageScrollView.motionDelegate = self
-        view.insertSubview(imageScrollView, at: 0)
-    }
-    
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         imageScrollView.enableMotion()
     }
-    
-    private var initialLayout = true
     
     /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (initial layout).
     override open func viewDidLayoutSubviews() {
@@ -70,6 +47,18 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
             initialLayout = false
             imageScrollView.centerContentOffset()
         }
+    }
+    
+    // MARK: Helpers
+    
+    private var initialLayout = true
+    
+    private func configureImageScrollView() {
+        imageScrollView.image = image
+        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageScrollView.frame = view.frame
+        imageScrollView.motionDelegate = self
+        view.insertSubview(imageScrollView, at: 0)
     }
     
     // MARK: - AEImageMotionDelegate
