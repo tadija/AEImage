@@ -2,19 +2,19 @@ import UIKit
 import CoreMotion
 
 /**
-    Minimalistic view controller which just adds `AEImageScrollView`
+    Minimalistic view controller which just adds `ImageScrollView`
     to its view hierarchy, and has `image` property to set its content.
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
     It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
-    It provides default implementation for `AEMotionScrollDelegate` which can be overriden if needed.
+    It provides default implementation for `MotionScrollDelegate` which can be overriden if needed.
 */
-open class AEImageViewController: UIViewController, AEMotionScrollDelegate {
+open class ImageViewController: UIViewController, MotionScrollDelegate {
     
     // MARK: - Outlets
     
     /// Zoomable image view which displays the image.
-    public let imageScrollView = AEImageScrollView()
+    public let imageScrollView = ImageScrollView()
     
     // MARK: - Properties
     
@@ -61,7 +61,7 @@ open class AEImageViewController: UIViewController, AEMotionScrollDelegate {
         view.insertSubview(imageScrollView, at: 0)
     }
     
-    // MARK: - AEImageMotionDelegate
+    // MARK: - MotionScrollDelegate
     
     open var motionSettings = MotionSettings()
     

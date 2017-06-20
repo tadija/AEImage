@@ -11,7 +11,7 @@ import CoreMotion
     It will automatically receive gyro data and update its content offset based on `motionDelegate` configuration.
     It's also possible to enable `infiniteScroll` effect by property (useful for 360 panorama images or similar).
 */
-open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelegate {
+open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
     
     // MARK: - Types
     
@@ -79,10 +79,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     }
     
     /// Gyro motion delegate
-    public weak var motionScrollDelegate: AEMotionScrollDelegate?
+    public weak var motionScrollDelegate: MotionScrollDelegate?
     
     /// Gyro motion manager
-    private let motionManager = AEMotionManager()
+    private let motionManager = MotionManager()
     
     // MARK: - Override
     
@@ -409,7 +409,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         enableMotion()
     }
     
-    // MARK: - AEMotionDelegate
+    // MARK: - MotionDelegate
     
     /// Gyro motion will be reported, here then based on calculation from `motionDelegate` content offset will update.
     public func didUpdate(gyroData: CMGyroData) {

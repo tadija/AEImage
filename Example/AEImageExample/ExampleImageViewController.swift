@@ -9,7 +9,7 @@
 import UIKit
 import AEImage
 
-class ImageViewController: AEImageViewController {
+class ExampleImageViewController: ImageViewController {
     
     // MARK: - Lifecycle
     
@@ -22,7 +22,7 @@ class ImageViewController: AEImageViewController {
         motionSettings.isEnabled = true
         motionSettings.sensitivity = 1.5
         
-        image = UIImage(named: "demo")
+        image = #imageLiteral(resourceName: "demo")
     }
 
     override var prefersStatusBarHidden: Bool {

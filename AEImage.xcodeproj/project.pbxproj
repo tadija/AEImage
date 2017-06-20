@@ -8,25 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		8B0037E71D8D7C0000017853 /* AEImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B0037E51D8D7C0000017853 /* AEImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8B0037F01D8D7C5400017853 /* AEImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037ED1D8D7C5400017853 /* AEImageScrollView.swift */; };
-		8B0037F11D8D7C5400017853 /* AEImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037EE1D8D7C5400017853 /* AEImageViewController.swift */; };
-		8B0037F21D8D7C5400017853 /* AEMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037EF1D8D7C5400017853 /* AEMotionManager.swift */; };
-		8BD1012C1EF9D24000C20D72 /* AEMotionScrollDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD1012B1EF9D24000C20D72 /* AEMotionScrollDelegate.swift */; };
+		8B0037F01D8D7C5400017853 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037ED1D8D7C5400017853 /* ImageScrollView.swift */; };
+		8B0037F11D8D7C5400017853 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037EE1D8D7C5400017853 /* ImageViewController.swift */; };
+		8B0037F21D8D7C5400017853 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0037EF1D8D7C5400017853 /* MotionManager.swift */; };
+		8BD1012C1EF9D24000C20D72 /* MotionScrollDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD1012B1EF9D24000C20D72 /* MotionScrollDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8B0037E21D8D7C0000017853 /* AEImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AEImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B0037E51D8D7C0000017853 /* AEImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEImage.h; sourceTree = "<group>"; };
 		8B0037E61D8D7C0000017853 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8B0037ED1D8D7C5400017853 /* AEImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AEImageScrollView.swift; sourceTree = "<group>"; };
-		8B0037EE1D8D7C5400017853 /* AEImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AEImageViewController.swift; sourceTree = "<group>"; };
-		8B0037EF1D8D7C5400017853 /* AEMotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AEMotionManager.swift; sourceTree = "<group>"; };
+		8B0037ED1D8D7C5400017853 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
+		8B0037EE1D8D7C5400017853 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		8B0037EF1D8D7C5400017853 /* MotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		8B0037F41D8D7D6000017853 /* AEImage.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = AEImage.podspec; sourceTree = "<group>"; };
 		8B0037F51D8D7D6100017853 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		8B0037F61D8D7D6100017853 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8B0037F71D8D7D6100017853 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		8B0037F81D8D7D6100017853 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		8BD1012B1EF9D24000C20D72 /* AEMotionScrollDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AEMotionScrollDelegate.swift; sourceTree = "<group>"; };
+		8BD1012B1EF9D24000C20D72 /* MotionScrollDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionScrollDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +61,10 @@
 		8B0037E41D8D7C0000017853 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				8B0037ED1D8D7C5400017853 /* AEImageScrollView.swift */,
-				8B0037EE1D8D7C5400017853 /* AEImageViewController.swift */,
-				8B0037EF1D8D7C5400017853 /* AEMotionManager.swift */,
-				8BD1012B1EF9D24000C20D72 /* AEMotionScrollDelegate.swift */,
+				8B0037ED1D8D7C5400017853 /* ImageScrollView.swift */,
+				8B0037EE1D8D7C5400017853 /* ImageViewController.swift */,
+				8B0037EF1D8D7C5400017853 /* MotionManager.swift */,
+				8BD1012B1EF9D24000C20D72 /* MotionScrollDelegate.swift */,
 				8B0037F31D8D7C7500017853 /* Supporting Files */,
 			);
 			path = Sources;
@@ -171,10 +171,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B0037F11D8D7C5400017853 /* AEImageViewController.swift in Sources */,
-				8BD1012C1EF9D24000C20D72 /* AEMotionScrollDelegate.swift in Sources */,
-				8B0037F21D8D7C5400017853 /* AEMotionManager.swift in Sources */,
-				8B0037F01D8D7C5400017853 /* AEImageScrollView.swift in Sources */,
+				8B0037F11D8D7C5400017853 /* ImageViewController.swift in Sources */,
+				8BD1012C1EF9D24000C20D72 /* MotionScrollDelegate.swift in Sources */,
+				8B0037F21D8D7C5400017853 /* MotionManager.swift in Sources */,
+				8B0037F01D8D7C5400017853 /* ImageScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
