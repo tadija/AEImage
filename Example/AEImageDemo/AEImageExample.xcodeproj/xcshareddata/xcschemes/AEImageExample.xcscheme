@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B0038021D8D836500017853"
-               BuildableName = "AEImageDemo.app"
-               BlueprintName = "AEImageDemo"
-               ReferencedContainer = "container:AEImageDemo.xcodeproj">
+               BuildableName = "AEImageExample.app"
+               BlueprintName = "AEImageExample"
+               ReferencedContainer = "container:AEImageExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B0038021D8D836500017853"
-            BuildableName = "AEImageDemo.app"
-            BlueprintName = "AEImageDemo"
-            ReferencedContainer = "container:AEImageDemo.xcodeproj">
+            BuildableName = "AEImageExample.app"
+            BlueprintName = "AEImageExample"
+            ReferencedContainer = "container:AEImageExample.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B0038021D8D836500017853"
-            BuildableName = "AEImageDemo.app"
-            BlueprintName = "AEImageDemo"
-            ReferencedContainer = "container:AEImageDemo.xcodeproj">
+            BuildableName = "AEImageExample.app"
+            BlueprintName = "AEImageExample"
+            ReferencedContainer = "container:AEImageExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B0038021D8D836500017853"
-            BuildableName = "AEImageDemo.app"
-            BlueprintName = "AEImageDemo"
-            ReferencedContainer = "container:AEImageDemo.xcodeproj">
+            BuildableName = "AEImageExample.app"
+            BlueprintName = "AEImageExample"
+            ReferencedContainer = "container:AEImageExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
