@@ -12,21 +12,21 @@
 		8B00380C1D8D836500017853 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380A1D8D836500017853 /* Main.storyboard */; };
 		8B00380E1D8D836500017853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380D1D8D836500017853 /* Assets.xcassets */; };
 		8B0038111D8D836500017853 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380F1D8D836500017853 /* LaunchScreen.storyboard */; };
-		8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; };
-		8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8BD101341EF9DCEC00C20D72 /* AEImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD101331EF9DCE000C20D72 /* AEImage.framework */; };
+		8BD101351EF9DCEC00C20D72 /* AEImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD101331EF9DCE000C20D72 /* AEImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8B00381D1D8D839500017853 /* PBXContainerItemProxy */ = {
+		8BD101321EF9DCE000C20D72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+			containerPortal = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8B0037E21D8D7C0000017853;
 			remoteInfo = AEImage;
 		};
-		8B0038221D8D8C0400017853 /* PBXContainerItemProxy */ = {
+		8BD101361EF9DCEC00C20D72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+			containerPortal = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8B0037E11D8D7C0000017853;
 			remoteInfo = AEImage;
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */,
+				8BD101351EF9DCEC00C20D72 /* AEImage.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -55,7 +55,7 @@
 		8B00380D1D8D836500017853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0038101D8D836500017853 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B0038121D8D836500017853 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8B0038191D8D839500017853 /* AEImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AEImage.xcodeproj; path = ../../AEImage.xcodeproj; sourceTree = "<group>"; };
+		8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AEImage.xcodeproj; path = ../AEImage.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */,
+				8BD101341EF9DCEC00C20D72 /* AEImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,7 +73,7 @@
 		8B0037FA1D8D836500017853 = {
 			isa = PBXGroup;
 			children = (
-				8B0038191D8D839500017853 /* AEImage.xcodeproj */,
+				8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */,
 				8B0038051D8D836500017853 /* AEImageExample */,
 				8B0038041D8D836500017853 /* Products */,
 			);
@@ -98,14 +98,6 @@
 			path = AEImageExample;
 			sourceTree = "<group>";
 		};
-		8B00381A1D8D839500017853 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8B00381E1D8D839500017853 /* AEImage.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		8B00381F1D8D83F300017853 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +106,14 @@
 				8B0038121D8D836500017853 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8BD1012F1EF9DCE000C20D72 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8BD101331EF9DCE000C20D72 /* AEImage.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,7 +131,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				8B0038231D8D8C0400017853 /* PBXTargetDependency */,
+				8BD101371EF9DCEC00C20D72 /* PBXTargetDependency */,
 			);
 			name = AEImageExample;
 			productName = AEImageExample;
@@ -168,8 +168,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8B00381A1D8D839500017853 /* Products */;
-					ProjectRef = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+					ProductGroup = 8BD1012F1EF9DCE000C20D72 /* Products */;
+					ProjectRef = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -180,11 +180,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8B00381E1D8D839500017853 /* AEImage.framework */ = {
+		8BD101331EF9DCE000C20D72 /* AEImage.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = AEImage.framework;
-			remoteRef = 8B00381D1D8D839500017853 /* PBXContainerItemProxy */;
+			remoteRef = 8BD101321EF9DCE000C20D72 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -215,10 +215,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8B0038231D8D8C0400017853 /* PBXTargetDependency */ = {
+		8BD101371EF9DCEC00C20D72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AEImage;
-			targetProxy = 8B0038221D8D8C0400017853 /* PBXContainerItemProxy */;
+			targetProxy = 8BD101361EF9DCEC00C20D72 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
