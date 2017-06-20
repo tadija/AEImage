@@ -10,7 +10,7 @@ public protocol AEMotionDelegate: class {
     Simple subclass of `CMMotionManager` which sends gyro updates
     to its `delegate` and can be toggled ON and OFF.
 */
-open class AEMotion: CMMotionManager {
+open class AEMotionManager: CMMotionManager {
     
     // MARK: - Properties
     

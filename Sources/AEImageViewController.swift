@@ -7,9 +7,9 @@ import CoreMotion
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
     It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
-    It provides default logic for calculating content offset based on gyro data which can be overriden if needed.
+    It provides default implementation for `AEMotionScrollDelegate` which can be overriden if needed.
 */
-open class AEImageViewController: UIViewController, AEImageMotionDelegate {
+open class AEImageViewController: UIViewController, AEMotionScrollDelegate {
     
     // MARK: - Outlets
     
@@ -57,7 +57,7 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
         imageScrollView.image = image
         imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         imageScrollView.frame = view.frame
-        imageScrollView.motionDelegate = self
+        imageScrollView.motionScrollDelegate = self
         view.insertSubview(imageScrollView, at: 0)
     }
     

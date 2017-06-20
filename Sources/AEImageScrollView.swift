@@ -79,10 +79,10 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     }
     
     /// Gyro motion delegate
-    public weak var motionDelegate: AEImageMotionDelegate?
+    public weak var motionScrollDelegate: AEMotionScrollDelegate?
     
     /// Gyro motion manager
-    private let motion = AEMotion()
+    private let motionManager = AEMotionManager()
     
     // MARK: - Override
     
@@ -174,7 +174,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         bouncesZoom = true
         
         delegate = self
-        motion.delegate = self
+        motionManager.delegate = self
     }
     
     private func configureStackView() {
@@ -366,16 +366,16 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     /// Calling this method will only enable motion if it's enabled in `motionSettings` returned by `motionDelegate`.
     /// This method is called internally in some of `UIScrollViewDelegate` methods and when app becomes active.
     @objc public func enableMotion() {
-        if motionDelegate?.motionSettings.isEnabled ?? false {
-            motion.isEnabled = true
+        if motionScrollDelegate?.motionSettings.isEnabled ?? false {
+            motionManager.isEnabled = true
         }
     }
     
     /// Calling this method will only disble motion if it's enabled in `motionSettings` returned by `motionDelegate`.
     /// This method is called internally in some of `UIScrollViewDelegate` methods and when app resigns being active.
     @objc public func disableMotion() {
-        if motionDelegate?.motionSettings.isEnabled ?? false {
-            motion.isEnabled = false
+        if motionScrollDelegate?.motionSettings.isEnabled ?? false {
+            motionManager.isEnabled = false
         }
     }
     
@@ -413,7 +413,7 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
     
     /// Gyro motion will be reported, here then based on calculation from `motionDelegate` content offset will update.
     public func didUpdate(gyroData: CMGyroData) {
-        guard let offset = motionDelegate?.calculatedContentOffset(with: gyroData) else {
+        guard let offset = motionScrollDelegate?.calculatedContentOffset(with: gyroData) else {
             return
         }
         let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
@@ -422,26 +422,4 @@ open class AEImageScrollView: UIScrollView, UIScrollViewDelegate, AEMotionDelega
         }, completion: nil)
     }
     
-}
-
-// MARK: - AEImageMotionDelegate
-
-/// Gyro Motion delegate
-public protocol AEImageMotionDelegate: class {
-    /// Motion configuration options
-    var motionSettings: MotionSettings { get }
-    /// Calculate content offset to which `ImageScrollView` should be moved (based on gyro data).
-    func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint?
-}
-
-/// Gyro motion settings
-public struct MotionSettings {
-    /// Gyro motion is tracked only if `isEnabled` is `true`. Default value is `false`.
-    public var isEnabled: Bool = false
-    /// Used in calculation for content offset to define threshold for which gyro updates are tracked.
-    public var threshold: CGFloat = 0.1
-    /// Used in calculation for content offset to define sensitivity of gyro movement.
-    public var sensitivity: CGFloat = 1.0
-    /// Designated initializer.
-    public init() {}
 }
