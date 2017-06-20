@@ -22,7 +22,7 @@ class ImageViewController: AEImageViewController {
         motionSettings.isEnabled = true
         motionSettings.sensitivity = 1.5
         
-        image = UIImage(named: "demo1")
+        image = UIImage(named: "demo")
     }
 
     override var prefersStatusBarHidden: Bool {
