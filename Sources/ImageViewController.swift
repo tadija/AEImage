@@ -1,57 +1,20 @@
-//
-// AEImageViewController.swift
-//
-// Copyright (c) 2016 Marko Tadić <tadija@me.com> http://tadija.net
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-//
-
 import UIKit
 import CoreMotion
 
-/// Gyro motion settings
-public struct MotionSettings {
-    public var isEnabled: Bool = false
-    public var threshold: CGFloat = 0.1
-    public var sensitivity: CGFloat = 1.0
-    public init() {}
-}
-
-public protocol AEImageMotionDelegate: class {
-    var motionSettings: MotionSettings { get }
-    func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint?
-}
-
 /**
-    Minimalistic view controller which just adds `AEImageScrollView`
+    Minimalistic view controller which just adds `ImageScrollView`
     to its view hierarchy, and has `image` property to set its content.
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
-    It may be used out of the box from code or storyboard,
-    but it might also be subclassed for custom funcionality or handling gyro motion data etc.
+    It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
+    It provides default implementation for `MotionScrollDelegate` which can be overriden if needed.
 */
-open class AEImageViewController: UIViewController, AEImageMotionDelegate {
+open class ImageViewController: UIViewController, MotionScrollDelegate {
     
     // MARK: - Outlets
     
     /// Zoomable image view which displays the image.
-    public let imageScrollView = AEImageScrollView()
+    public let imageScrollView = ImageScrollView()
     
     // MARK: - Properties
     
@@ -70,21 +33,11 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
         configureImageScrollView()
     }
     
-    private func configureImageScrollView() {
-        imageScrollView.image = image
-        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageScrollView.frame = view.frame
-        imageScrollView.motionDelegate = self
-        view.insertSubview(imageScrollView, at: 0)
-    }
-    
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         imageScrollView.enableMotion()
     }
-    
-    private var initialLayout = true
     
     /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (initial layout).
     override open func viewDidLayoutSubviews() {
@@ -96,11 +49,21 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
         }
     }
     
-    // MARK: - AEImageMotionDelegate
+    // MARK: Helpers
     
-    open var motionSettings: MotionSettings {
-        return MotionSettings()
+    private var initialLayout = true
+    
+    private func configureImageScrollView() {
+        imageScrollView.image = image
+        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageScrollView.frame = view.frame
+        imageScrollView.motionScrollDelegate = self
+        view.insertSubview(imageScrollView, at: 0)
     }
+    
+    // MARK: - MotionScrollDelegate
+    
+    open var motionSettings = MotionSettings()
     
     open func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint? {
         let settings = motionSettings
@@ -121,14 +84,14 @@ open class AEImageViewController: UIViewController, AEImageMotionDelegate {
     // MARK: Helpers
     
     private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
-        let orientation = UIApplication.shared.statusBarOrientation
+        let orientation = UIDevice.current.orientation
         let rotationRate: CGFloat
-        
-        if orientation.isLandscape {
+
+        if UIDeviceOrientationIsLandscape(orientation) {
             if orientation == .landscapeLeft {
-                rotationRate = CGFloat(-gyroData.rotationRate.x)
-            } else {
                 rotationRate = CGFloat(gyroData.rotationRate.x)
+            } else {
+                rotationRate = CGFloat(-gyroData.rotationRate.x)
             }
         } else {
             rotationRate = CGFloat(gyroData.rotationRate.y)

@@ -1,6 +1,6 @@
 //
 //  ImageViewController.swift
-//  AEImageDemo
+//  AEImageExample
 //
 //  Created by Marko Tadic on 9/17/16.
 //  Copyright © 2016 AE. All rights reserved.
@@ -9,24 +9,20 @@
 import UIKit
 import AEImage
 
-class ImageViewController: AEImageViewController {
-    
-    // MARK: AEImageMotionDelegate
-    
-    override var motionSettings: MotionSettings {
-        var settings = MotionSettings()
-        settings.isEnabled = true
-        settings.sensitivity = 1.5
-        return settings
-    }
+class ExampleImageViewController: ImageViewController {
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        imageScrollView.displayMode = .fillHeight
         imageScrollView.infiniteScroll = .horizontal
-        image = UIImage(named: "demo1")
+        
+        motionSettings.isEnabled = true
+        motionSettings.sensitivity = 1.5
+        
+        image = #imageLiteral(resourceName: "demo")
     }
 
     override var prefersStatusBarHidden: Bool {

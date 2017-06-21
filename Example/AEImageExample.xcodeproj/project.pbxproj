@@ -8,25 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		8B0038071D8D836500017853 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0038061D8D836500017853 /* AppDelegate.swift */; };
-		8B0038091D8D836500017853 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0038081D8D836500017853 /* ImageViewController.swift */; };
+		8B0038091D8D836500017853 /* ExampleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0038081D8D836500017853 /* ExampleImageViewController.swift */; };
 		8B00380C1D8D836500017853 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380A1D8D836500017853 /* Main.storyboard */; };
 		8B00380E1D8D836500017853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380D1D8D836500017853 /* Assets.xcassets */; };
 		8B0038111D8D836500017853 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B00380F1D8D836500017853 /* LaunchScreen.storyboard */; };
-		8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; };
-		8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8B00381E1D8D839500017853 /* AEImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8BD101341EF9DCEC00C20D72 /* AEImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD101331EF9DCE000C20D72 /* AEImage.framework */; };
+		8BD101351EF9DCEC00C20D72 /* AEImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD101331EF9DCE000C20D72 /* AEImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8B00381D1D8D839500017853 /* PBXContainerItemProxy */ = {
+		8BD101321EF9DCE000C20D72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+			containerPortal = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8B0037E21D8D7C0000017853;
 			remoteInfo = AEImage;
 		};
-		8B0038221D8D8C0400017853 /* PBXContainerItemProxy */ = {
+		8BD101361EF9DCEC00C20D72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+			containerPortal = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8B0037E11D8D7C0000017853;
 			remoteInfo = AEImage;
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8B0038211D8D8C0400017853 /* AEImage.framework in Embed Frameworks */,
+				8BD101351EF9DCEC00C20D72 /* AEImage.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,14 +48,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8B0038031D8D836500017853 /* AEImageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AEImageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0038031D8D836500017853 /* AEImageExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AEImageExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B0038061D8D836500017853 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8B0038081D8D836500017853 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		8B0038081D8D836500017853 /* ExampleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleImageViewController.swift; sourceTree = "<group>"; };
 		8B00380B1D8D836500017853 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8B00380D1D8D836500017853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0038101D8D836500017853 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B0038121D8D836500017853 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8B0038191D8D839500017853 /* AEImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AEImage.xcodeproj; path = ../../AEImage.xcodeproj; sourceTree = "<group>"; };
+		8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AEImage.xcodeproj; path = ../AEImage.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B0038201D8D8C0400017853 /* AEImage.framework in Frameworks */,
+				8BD101341EF9DCEC00C20D72 /* AEImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,55 +73,55 @@
 		8B0037FA1D8D836500017853 = {
 			isa = PBXGroup;
 			children = (
-				8B0038051D8D836500017853 /* AEImageDemo */,
+				8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */,
+				8B0038051D8D836500017853 /* AEImageExample */,
 				8B0038041D8D836500017853 /* Products */,
-				8B0038191D8D839500017853 /* AEImage.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
 		8B0038041D8D836500017853 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8B0038031D8D836500017853 /* AEImageDemo.app */,
+				8B0038031D8D836500017853 /* AEImageExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8B0038051D8D836500017853 /* AEImageDemo */ = {
+		8B0038051D8D836500017853 /* AEImageExample */ = {
 			isa = PBXGroup;
 			children = (
 				8B0038061D8D836500017853 /* AppDelegate.swift */,
-				8B0038081D8D836500017853 /* ImageViewController.swift */,
+				8B00380A1D8D836500017853 /* Main.storyboard */,
+				8B0038081D8D836500017853 /* ExampleImageViewController.swift */,
 				8B00381F1D8D83F300017853 /* Supporting Files */,
 			);
-			path = AEImageDemo;
-			sourceTree = "<group>";
-		};
-		8B00381A1D8D839500017853 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8B00381E1D8D839500017853 /* AEImage.framework */,
-			);
-			name = Products;
+			path = AEImageExample;
 			sourceTree = "<group>";
 		};
 		8B00381F1D8D83F300017853 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8B00380A1D8D836500017853 /* Main.storyboard */,
-				8B00380D1D8D836500017853 /* Assets.xcassets */,
 				8B00380F1D8D836500017853 /* LaunchScreen.storyboard */,
+				8B00380D1D8D836500017853 /* Assets.xcassets */,
 				8B0038121D8D836500017853 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		8BD1012F1EF9DCE000C20D72 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8BD101331EF9DCE000C20D72 /* AEImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8B0038021D8D836500017853 /* AEImageDemo */ = {
+		8B0038021D8D836500017853 /* AEImageExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B0038151D8D836500017853 /* Build configuration list for PBXNativeTarget "AEImageDemo" */;
+			buildConfigurationList = 8B0038151D8D836500017853 /* Build configuration list for PBXNativeTarget "AEImageExample" */;
 			buildPhases = (
 				8B0037FF1D8D836500017853 /* Sources */,
 				8B0038001D8D836500017853 /* Frameworks */,
@@ -131,11 +131,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				8B0038231D8D8C0400017853 /* PBXTargetDependency */,
+				8BD101371EF9DCEC00C20D72 /* PBXTargetDependency */,
 			);
-			name = AEImageDemo;
-			productName = AEImageDemo;
-			productReference = 8B0038031D8D836500017853 /* AEImageDemo.app */;
+			name = AEImageExample;
+			productName = AEImageExample;
+			productReference = 8B0038031D8D836500017853 /* AEImageExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -155,7 +155,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8B0037FE1D8D836500017853 /* Build configuration list for PBXProject "AEImageDemo" */;
+			buildConfigurationList = 8B0037FE1D8D836500017853 /* Build configuration list for PBXProject "AEImageExample" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -168,23 +168,23 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8B00381A1D8D839500017853 /* Products */;
-					ProjectRef = 8B0038191D8D839500017853 /* AEImage.xcodeproj */;
+					ProductGroup = 8BD1012F1EF9DCE000C20D72 /* Products */;
+					ProjectRef = 8BD1012E1EF9DCE000C20D72 /* AEImage.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				8B0038021D8D836500017853 /* AEImageDemo */,
+				8B0038021D8D836500017853 /* AEImageExample */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8B00381E1D8D839500017853 /* AEImage.framework */ = {
+		8BD101331EF9DCE000C20D72 /* AEImage.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = AEImage.framework;
-			remoteRef = 8B00381D1D8D839500017853 /* PBXContainerItemProxy */;
+			remoteRef = 8BD101321EF9DCE000C20D72 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -207,7 +207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B0038091D8D836500017853 /* ImageViewController.swift in Sources */,
+				8B0038091D8D836500017853 /* ExampleImageViewController.swift in Sources */,
 				8B0038071D8D836500017853 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,10 +215,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8B0038231D8D8C0400017853 /* PBXTargetDependency */ = {
+		8BD101371EF9DCEC00C20D72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AEImage;
-			targetProxy = 8B0038221D8D8C0400017853 /* PBXContainerItemProxy */;
+			targetProxy = 8BD101361EF9DCEC00C20D72 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -343,9 +343,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = VL46Q749LJ;
-				INFOPLIST_FILE = AEImageDemo/Info.plist;
+				INFOPLIST_FILE = AEImageExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = net.tadija.AEImageDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = net.tadija.AEImageExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -357,9 +357,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = VL46Q749LJ;
-				INFOPLIST_FILE = AEImageDemo/Info.plist;
+				INFOPLIST_FILE = AEImageExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = net.tadija.AEImageDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = net.tadija.AEImageExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -368,7 +368,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8B0037FE1D8D836500017853 /* Build configuration list for PBXProject "AEImageDemo" */ = {
+		8B0037FE1D8D836500017853 /* Build configuration list for PBXProject "AEImageExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B0038131D8D836500017853 /* Debug */,
@@ -377,7 +377,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B0038151D8D836500017853 /* Build configuration list for PBXNativeTarget "AEImageDemo" */ = {
+		8B0038151D8D836500017853 /* Build configuration list for PBXNativeTarget "AEImageExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B0038161D8D836500017853 /* Debug */,
