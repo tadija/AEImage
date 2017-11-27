@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.2.0
+
+- Migrated to Swift 4 with Xcode 9.1
+- Improvements and refactoring
+
 ## Version 2.1.0
 
 - Improvements and refactoring

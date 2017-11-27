@@ -36,15 +36,13 @@ open class MotionManager: CMMotionManager {
     // MARK: - Helpers
     
     private func startTrackingMotion() {
-        guard
-            let queue = OperationQueue.current,
-            isGyroAvailable,
-            isGyroActive == false
-        else { return }
-        
-        startGyroUpdates(to: queue, withHandler: { (gyroData, NSError) in
-            guard let data = gyroData else { return }
-            self.delegate?.didUpdate(gyroData: data)
+        guard isGyroAvailable, !isGyroActive, let queue = OperationQueue.current else {
+            return
+        }
+        startGyroUpdates(to: queue, withHandler: { [weak self] (gyroData, NSError) in
+            if let gyroData = gyroData {
+                self?.delegate?.didUpdate(gyroData: gyroData)
+            }
         })
     }
     
