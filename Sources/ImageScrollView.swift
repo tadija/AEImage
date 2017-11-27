@@ -77,6 +77,12 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
             }
         }
     }
+
+    /// Flag that determines if vertical scrolling of image is enabled. Defaults to true.
+    open var isVerticalScrollEnabled: Bool = true
+
+    /// Flag that determines if horizontal scrolling of image is enabled. Defaults to true.
+    open var isHorizontalScrollEnabled: Bool = true
     
     /// Gyro motion delegate
     public weak var motionScrollDelegate: MotionScrollDelegate?
@@ -95,6 +101,21 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         }
         didSet {
             if !frame.size.equalTo(oldValue.size), let image = image {
+                updateZoomScales(with: image)
+                recoverFromResizing()
+            }
+        }
+    }
+
+    /// Whenever bounds are changed zoom scales are gonna be re-calculated.
+    override open var bounds: CGRect {
+        willSet {
+            if !bounds.size.equalTo(newValue.size) {
+                prepareToResize()
+            }
+        }
+        didSet {
+            if !bounds.size.equalTo(oldValue.size), let image = image {
                 updateZoomScales(with: image)
                 recoverFromResizing()
             }
@@ -276,6 +297,24 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         maximumZoomScale = minimumZoomScale * 3.0
         
         zoomScale = minimumZoomScale
+
+        if !isVerticalScrollEnabled {
+            disableVerticalScroll()
+        }
+
+        if !isHorizontalScrollEnabled {
+            disableHorizontalScroll()
+        }
+    }
+
+    private func disableVerticalScroll() {
+        let newContentSize = CGSize(width: contentSize.width, height: frame.size.height)
+        contentSize = newContentSize
+    }
+
+    private func disableHorizontalScroll() {
+        let newContentSize = CGSize(width: frame.size.width, height: contentSize.height)
+        contentSize = newContentSize
     }
     
     // MARK: - Lifecycle

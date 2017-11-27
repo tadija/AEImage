@@ -87,11 +87,11 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
         let orientation = UIDevice.current.orientation
         let rotationRate: CGFloat
 
-        if UIDeviceOrientationIsLandscape(orientation) {
+        if orientation.isLandscape {
             if orientation == .landscapeLeft {
-                rotationRate = CGFloat(gyroData.rotationRate.x)
-            } else {
                 rotationRate = CGFloat(-gyroData.rotationRate.x)
+            } else {
+                rotationRate = CGFloat(gyroData.rotationRate.x)
             }
         } else {
             rotationRate = CGFloat(gyroData.rotationRate.y)
