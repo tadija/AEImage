@@ -1,14 +1,13 @@
+[![Swift 4.2](https://img.shields.io/badge/Swift-4.2-orange.svg?style=flat)](https://swift.org)
+[![Platforms iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](http://www.apple.com)
+[![CocoaPods](https://img.shields.io/cocoapods/v/AEImage.svg?style=flat)](https://cocoapods.org/pods/AEImage)
+[![Carthage](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
+[![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)](LICENSE)
+
 # AEImage
 
 **Adaptive image viewer for iOS (with support for zoom, gyro motion and infinite scroll)**
-
-[![Language Swift 4.0](https://img.shields.io/badge/Language-Swift%204.0-orange.svg?style=flat)](https://swift.org)
-[![Platforms iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](http://www.apple.com)
-[![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)](LICENSE)
-
-[![CocoaPods Version](https://img.shields.io/cocoapods/v/AEImage.svg?style=flat)](https://cocoapods.org/pods/AEImage)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
 > Super awesome lightweight and easy to use image viewer with all the standard options + some more. It may be used from code or storyboard and as it frame changes, it will always rescale image appropriately based on its settings.  
 
@@ -60,7 +59,7 @@ class ReadmeViewController: ImageViewController {
 - [Swift Package Manager](https://swift.org/package-manager/):
 
 ```
-.Package(url: "https://github.com/tadija/AEImage.git", from: "2.2.0")
+.Package(url: "https://github.com/tadija/AEImage.git", majorVersion: 2)
 ```
 
 - [Carthage](https://github.com/Carthage/Carthage):

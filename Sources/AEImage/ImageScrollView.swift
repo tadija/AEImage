@@ -1,3 +1,9 @@
+/**
+ *  https://github.com/tadija/AEImage
+ *  Copyright (c) Marko Tadić 2016-2018
+ *  Licensed under the MIT license. See LICENSE file.
+ */
+
 import UIKit
 import CoreMotion
 
@@ -383,8 +389,10 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
     
     private func addObservers() {
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(enableMotion), name: .UIApplicationDidBecomeActive, object: nil)
-        center.addObserver(self, selector: #selector(disableMotion), name: .UIApplicationWillResignActive, object: nil)
+        center.addObserver(self, selector: #selector(enableMotion),
+                           name: UIApplication.didBecomeActiveNotification, object: nil)
+        center.addObserver(self, selector: #selector(disableMotion),
+                           name: UIApplication.willResignActiveNotification, object: nil)
     }
     
     private func removeObservers() {
@@ -455,7 +463,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         guard let offset = motionScrollDelegate?.calculatedContentOffset(with: gyroData) else {
             return
         }
-        let options: UIViewAnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
+        let options: UIView.AnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
         UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { () in
             self.setContentOffset(offset, animated: false)
         }, completion: nil)

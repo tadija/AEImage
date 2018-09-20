@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.2.1
+
+- Bumped Swift language version to 4.2
+
 ## Version 2.2.0
 
 - Migrated to Swift 4 with Xcode 9.1

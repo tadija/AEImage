@@ -1,3 +1,9 @@
+/**
+ *  https://github.com/tadija/AEImage
+ *  Copyright (c) Marko Tadić 2016-2018
+ *  Licensed under the MIT license. See LICENSE file.
+ */
+
 import CoreMotion
 
 /// Conformer to this protocol should provide gyro motion settings and calculate content offset based on gyro data.
