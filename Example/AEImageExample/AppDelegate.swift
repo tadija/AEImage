@@ -1,10 +1,8 @@
-//
-//  AppDelegate.swift
-//  AEImageExample
-//
-//  Created by Marko Tadic on 9/17/16.
-//  Copyright © 2016 AE. All rights reserved.
-//
+/**
+ *  https://github.com/tadija/AEImage
+ *  Copyright (c) Marko Tadić 2016-2018
+ *  Licensed under the MIT license. See LICENSE file.
+ */
 
 import UIKit
 
