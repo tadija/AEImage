@@ -5,7 +5,6 @@
  */
 
 import UIKit
-import CoreMotion
 
 /**
     This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
@@ -13,13 +12,11 @@ import CoreMotion
 
     It may be used directly from code or from storyboard with auto layout,
     just set its `image` and `displayMode` properties and it will do the rest.
-    
-    It will automatically receive gyro data and update its content offset based on `motionDelegate` configuration.
+
     It's also possible to enable `infiniteScroll` effect by property (useful for 360 panorama images or similar).
 */
-open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
-    
-    // MARK: - Types
+open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
+    // MARK: Types
     
     /// Modes for calculating zoom scale.
     public enum DisplayMode {
@@ -45,7 +42,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         case vertical
     }
     
-    // MARK: - Outlets
+    // MARK: Outlets
     
     /// Stack view is placeholder for imageView.
     public let stackView = UIStackView()
@@ -57,7 +54,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
     private let leadingImageView = UIImageView()
     private let trailingImageView = UIImageView()
     
-    // MARK: - Properties
+    // MARK: Properties
     
     /// Image to be displayed. UI will be updated whenever you set this property.
     @IBInspectable open var image: UIImage? {
@@ -90,13 +87,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
     /// Flag that determines if horizontal scrolling of image is enabled. Defaults to true.
     open var isHorizontalScrollEnabled: Bool = true
     
-    /// Gyro motion delegate
-    public weak var motionScrollDelegate: MotionScrollDelegate?
-    
-    /// Gyro motion manager
-    private let motionManager = MotionManager()
-    
-    // MARK: - Override
+    // MARK: Override
     
     /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
@@ -165,43 +156,63 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         }
     }
     
-    // MARK: - Init
+    // MARK: Init
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        commonInit()
+        configure()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        commonInit()
+        configure()
     }
     
     public init() {
         super.init(frame: CGRect.zero)
-        commonInit()
+        configure()
     }
     
-    private func commonInit() {
-        configureSelf()
+    private func configure() {
+        configureScrollView()
+        configureStackView()
         updateUI()
+    }
+
+    // MARK: Lifecycle
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        fakeContentOffsetIfNeeded()
+    }
+
+    // MARK: UIScrollViewDelegate
+
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return stackView
+    }
+
+    // MARK: API
+
+    /// This will center content offset horizontally and verticaly.
+    /// It's also called whenever `image` property is set.
+    open func centerContentOffset() {
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
+        let offset = CGPoint(x: centerX, y: centerY)
+        setContentOffset(offset, animated: false)
     }
     
     // MARK: Helpers
-    
-    private func configureSelf() {
-        configureScrollView()
-        configureStackView()
-    }
     
     private func configureScrollView() {
         backgroundColor = UIColor.black
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
         bouncesZoom = true
-        
         delegate = self
-        motionManager.delegate = self
     }
     
     private func configureStackView() {
@@ -323,25 +334,6 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
         contentSize = newContentSize
     }
     
-    // MARK: - Lifecycle
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        fakeContentOffsetIfNeeded()
-    }
-    
-    open override func didMoveToWindow() {
-        super.didMoveToWindow()
-        addObservers()
-    }
-    
-    open override func willMove(toWindow newWindow: UIWindow?) {
-        super.willMove(toWindow: newWindow)
-        removeObservers()
-    }
-    
-    // MARK: Helpers
-    
     private func fakeContentOffsetIfNeeded() {
         var newOffset: CGPoint?
         let xOffset = contentOffset.x
@@ -386,87 +378,4 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate, MotionDelegate {
             }
         }
     }
-    
-    private func addObservers() {
-        let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(enableMotion),
-                           name: UIApplication.didBecomeActiveNotification, object: nil)
-        center.addObserver(self, selector: #selector(disableMotion),
-                           name: UIApplication.willResignActiveNotification, object: nil)
-    }
-    
-    private func removeObservers() {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    // MARK: - API
-    
-    /// This will center content offset horizontally and verticaly.
-    /// It's also called whenever `image` property is set.
-    open func centerContentOffset() {
-        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
-        let offset = CGPoint(x: centerX, y: centerY)
-        setContentOffset(offset, animated: false)
-    }
-    
-    /// Calling this method will only enable motion if it's enabled in `motionSettings` returned by `motionDelegate`.
-    /// This method is called internally in some of `UIScrollViewDelegate` methods and when app becomes active.
-    @objc public func enableMotion() {
-        if motionScrollDelegate?.motionSettings.isEnabled ?? false {
-            motionManager.isEnabled = true
-        }
-    }
-    
-    /// Calling this method will only disble motion if it's enabled in `motionSettings` returned by `motionDelegate`.
-    /// This method is called internally in some of `UIScrollViewDelegate` methods and when app resigns being active.
-    @objc public func disableMotion() {
-        if motionScrollDelegate?.motionSettings.isEnabled ?? false {
-            motionManager.isEnabled = false
-        }
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    /// View used for zooming must be `stackView`.
-    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return stackView
-    }
-    
-    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        disableMotion()
-    }
-    
-    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        enableMotion()
-    }
-    
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        disableMotion()
-    }
-    
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            enableMotion()
-        }
-    }
-    
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        enableMotion()
-    }
-    
-    // MARK: - MotionDelegate
-    
-    /// Gyro motion will be reported, here then based on calculation from `motionDelegate` content offset will update.
-    public func didUpdate(gyroData: CMGyroData) {
-        guard let offset = motionScrollDelegate?.calculatedContentOffset(with: gyroData) else {
-            return
-        }
-        let options: UIView.AnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { () in
-            self.setContentOffset(offset, animated: false)
-        }, completion: nil)
-    }
-    
 }

@@ -7,7 +7,7 @@
 import UIKit
 import AEImage
 
-class ExampleImageViewController: ImageViewController {
+class ExampleImageViewController: ImageMotionViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -18,8 +18,8 @@ class ExampleImageViewController: ImageViewController {
         imageScrollView.displayMode = .fillHeight
         imageScrollView.infiniteScroll = .horizontal
 
-        motionSettings.isEnabled = true
-        motionSettings.sensitivity = 1.5
+        isMotionEnabled = true
+        motionSensitivity = 1.5
 
         image = #imageLiteral(resourceName: "demo")
     }

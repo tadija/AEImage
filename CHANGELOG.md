@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.0.0
+
+- Improvements and optimization
+
 ## Version 2.3.0
 
 - Improvements and bug fixes

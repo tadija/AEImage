@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8BC7BF9421B5B68700A7C8EC /* ImageMotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC7BF9321B5B68700A7C8EC /* ImageMotionViewController.swift */; };
 		8BE5086E215377E0004D5623 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE5086A215377E0004D5623 /* ImageViewController.swift */; };
-		8BE5086F215377E0004D5623 /* MotionScrollDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE5086B215377E0004D5623 /* MotionScrollDelegate.swift */; };
-		8BE50870215377E0004D5623 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE5086C215377E0004D5623 /* MotionManager.swift */; };
 		8BE50871215377E0004D5623 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE5086D215377E0004D5623 /* ImageScrollView.swift */; };
 		8BE50872215377E9004D5623 /* AEImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BE50867215377D7004D5623 /* AEImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -21,11 +20,10 @@
 		8B0037F61D8D7D6100017853 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8B0037F71D8D7D6100017853 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		8B0037F81D8D7D6100017853 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8BC7BF9321B5B68700A7C8EC /* ImageMotionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMotionViewController.swift; sourceTree = "<group>"; };
 		8BE50866215377D7004D5623 /* AEImage.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AEImage.plist; sourceTree = "<group>"; };
 		8BE50867215377D7004D5623 /* AEImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEImage.h; sourceTree = "<group>"; };
 		8BE5086A215377E0004D5623 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
-		8BE5086B215377E0004D5623 /* MotionScrollDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionScrollDelegate.swift; sourceTree = "<group>"; };
-		8BE5086C215377E0004D5623 /* MotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		8BE5086D215377E0004D5623 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,10 +88,9 @@
 		8BE50869215377E0004D5623 /* AEImage */ = {
 			isa = PBXGroup;
 			children = (
-				8BE5086A215377E0004D5623 /* ImageViewController.swift */,
-				8BE5086B215377E0004D5623 /* MotionScrollDelegate.swift */,
-				8BE5086C215377E0004D5623 /* MotionManager.swift */,
 				8BE5086D215377E0004D5623 /* ImageScrollView.swift */,
+				8BE5086A215377E0004D5623 /* ImageViewController.swift */,
+				8BC7BF9321B5B68700A7C8EC /* ImageMotionViewController.swift */,
 			);
 			path = AEImage;
 			sourceTree = "<group>";
@@ -179,10 +176,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BC7BF9421B5B68700A7C8EC /* ImageMotionViewController.swift in Sources */,
 				8BE5086E215377E0004D5623 /* ImageViewController.swift in Sources */,
 				8BE50871215377E0004D5623 /* ImageScrollView.swift in Sources */,
-				8BE50870215377E0004D5623 /* MotionManager.swift in Sources */,
-				8BE5086F215377E0004D5623 /* MotionScrollDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
