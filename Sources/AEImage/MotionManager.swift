@@ -32,24 +32,21 @@ open class MotionManager: CMMotionManager {
         }
     }
     
-    // MARK: - API
-    
-    /// Toggles gyro updates ON and OFF.
-    open func toggle() {
-        isEnabled = !isEnabled
-    }
-    
     // MARK: - Helpers
+
+    private let operationQueue = OperationQueue()
     
     private func startTrackingMotion() {
-        guard isGyroAvailable, !isGyroActive, let queue = OperationQueue.current else {
+        guard isGyroAvailable, !isGyroActive else {
             return
         }
-        startGyroUpdates(to: queue, withHandler: { [weak self] (gyroData, NSError) in
+        startGyroUpdates(to: operationQueue) { [weak self] gyroData, _ in
             if let gyroData = gyroData {
-                self?.delegate?.didUpdate(gyroData: gyroData)
+                DispatchQueue.main.async {
+                    self?.delegate?.didUpdate(gyroData: gyroData)
+                }
             }
-        })
+        }
     }
     
     private func stopTrackingMotion() {

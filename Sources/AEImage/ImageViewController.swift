@@ -54,6 +54,12 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
             imageScrollView.centerContentOffset()
         }
     }
+
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        imageScrollView.disableMotion()
+    }
     
     // MARK: Helpers
     
@@ -90,7 +96,7 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
     // MARK: Helpers
     
     private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
-        let orientation = UIDevice.current.orientation
+        let orientation = UIApplication.shared.statusBarOrientation
         let rotationRate: CGFloat
 
         if orientation.isLandscape {
