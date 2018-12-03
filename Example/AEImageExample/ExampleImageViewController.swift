@@ -18,8 +18,8 @@ class ExampleImageViewController: ImageViewController {
         imageScrollView.displayMode = .fillHeight
         imageScrollView.infiniteScroll = .horizontal
 
-        motionSettings.isEnabled = true
-        motionSettings.sensitivity = 1.5
+        imageScrollView.isMotionEnabled = true
+        motionSensitivity = 1.5
 
         image = #imageLiteral(resourceName: "demo")
     }

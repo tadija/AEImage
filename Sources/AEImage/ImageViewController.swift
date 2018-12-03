@@ -13,16 +13,15 @@ import CoreMotion
     It will also center content offset on the first call of `viewDidLayoutSubviews`.
 
     It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
-    It provides default implementation for `MotionScrollDelegate` which can be overriden if needed.
+    It provides default implementation for handling gyro updates which can be overriden if needed.
 */
-open class ImageViewController: UIViewController, MotionScrollDelegate {
-    
-    // MARK: - Outlets
+open class ImageViewController: UIViewController {
+    // MARK: Outlets
     
     /// Zoomable image view which displays the image.
     public let imageScrollView = ImageScrollView()
     
-    // MARK: - Properties
+    // MARK: Properties
     
     /// Facade to `image` property of the `imageScrollView`.
     @IBInspectable open var image: UIImage? {
@@ -30,22 +29,38 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
             imageScrollView.image = image
         }
     }
+
+    /// Used in the content offset calculation to define sensitivity of gyro movement if `isMotionEnabled` is `true`.
+    public var motionSensitivity: CGFloat = 1.0
+
+    private var displayLink: CADisplayLink?
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     
     override open func viewDidLoad() {
         super.viewDidLoad()
         
-        configureImageScrollView()
+        imageScrollView.image = image
+        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageScrollView.frame = view.frame
+        view.insertSubview(imageScrollView, at: 0)
     }
-    
-    override open func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        imageScrollView.enableMotion()
+
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        addObservers()
     }
-    
-    /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (initial layout).
+
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        removeObservers()
+    }
+
+    private var initialLayout = true
+
+    /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (for initial layout).
     override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -55,45 +70,77 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
         }
     }
 
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        startMotionUpdates()
+    }
+
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        imageScrollView.disableMotion()
+        stopMotionUpdates()
+    }
+}
+
+// MARK: - Motion Logic
+
+extension ImageViewController {
+    @objc
+    open func startMotionUpdates() {
+        imageScrollView.startTrackingMotion()
+        displayLink = CADisplayLink(target: self, selector: #selector(updateWithMotionGyroData))
+        displayLink?.add(to: .main, forMode: .common)
+    }
+
+    @objc
+    open func stopMotionUpdates() {
+        imageScrollView.stopTrackingMotion()
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+
+    @objc
+    open func updateWithMotionGyroData() {
+        guard
+            let gyroData = imageScrollView.motionGyroData,
+            let offset = calculatedContentOffset(with: gyroData)
+            else {
+                return
+        }
+        let options: UIView.AnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { [weak self] () in
+            self?.imageScrollView.setContentOffset(offset, animated: false)
+            }, completion: nil)
     }
     
     // MARK: Helpers
-    
-    private var initialLayout = true
-    
-    private func configureImageScrollView() {
-        imageScrollView.image = image
-        imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageScrollView.frame = view.frame
-        imageScrollView.motionScrollDelegate = self
-        view.insertSubview(imageScrollView, at: 0)
+
+    private func addObservers() {
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(startMotionUpdates),
+                           name: UIApplication.didBecomeActiveNotification, object: nil)
+        center.addObserver(self, selector: #selector(stopMotionUpdates),
+                           name: UIApplication.willResignActiveNotification, object: nil)
     }
-    
-    // MARK: - MotionScrollDelegate
-    
-    open var motionSettings = MotionSettings()
-    
-    open func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint? {
-        let settings = motionSettings
+
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    private func calculatedContentOffset(with gyroData: CMGyroData) -> CGPoint? {
         let rotationRate = self.rotationRate(with: gyroData)
-        
-        guard abs(rotationRate) >= settings.threshold else {
+        guard abs(rotationRate) >= 0.1 else {
             return nil
         }
 
-        let motionRate = motionFactor * settings.sensitivity
+        let motionRate = motionFactor * motionSensitivity
         var offsetX = imageScrollView.contentOffset.x - rotationRate * motionRate
         offsetX = constrainedOffsetX(with: offsetX)
-        
+
         let offset = CGPoint(x: offsetX, y: imageScrollView.contentOffset.y)
         return offset
     }
-    
-    // MARK: Helpers
     
     private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
         let orientation = UIApplication.shared.statusBarOrientation
@@ -138,5 +185,4 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
             return offsetX
         }
     }
-    
 }
