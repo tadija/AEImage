@@ -54,6 +54,12 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
             imageScrollView.centerContentOffset()
         }
     }
+
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        imageScrollView.disableMotion()
+    }
     
     // MARK: Helpers
     
