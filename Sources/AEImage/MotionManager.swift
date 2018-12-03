@@ -32,13 +32,6 @@ open class MotionManager: CMMotionManager {
         }
     }
     
-    // MARK: - API
-    
-    /// Toggles gyro updates ON and OFF.
-    open func toggle() {
-        isEnabled = !isEnabled
-    }
-    
     // MARK: - Helpers
     
     private func startTrackingMotion() {
