@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.3.0
+
+- Improvements and bug fixes
+
 ## Version 2.2.1
 
 - Bumped Swift language version to 4.2
