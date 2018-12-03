@@ -24,22 +24,40 @@ open class ImageViewController: UIViewController {
     // MARK: Properties
     
     /// Facade to `image` property of the `imageScrollView`.
-    @IBInspectable open var image: UIImage? {
+    @IBInspectable
+    open var image: UIImage? {
         didSet {
             imageScrollView.image = image
         }
     }
 
-    /// Used in the content offset calculation to define sensitivity of gyro movement if `isMotionEnabled` is `true`.
+    /// Defines if gyro updates are enabled or not. Defaults to `false`.
+    open var isMotionEnabled = false {
+        didSet {
+            if isMotionEnabled != oldValue {
+                isMotionEnabled ? startMotionUpdates() : stopMotionUpdates()
+            }
+        }
+    }
+
+    /// Used in the content offset calculation to define sensitivity of gyro movement.
     public var motionSensitivity: CGFloat = 1.0
 
+    /// Current gyroscope data (if motion is enabled).
+    /// If motion is not enabled or gyroscope data is not available, the value of this property is `nil`.
+    public var motionGyroData: CMGyroData? {
+        return motion.gyroData
+    }
+
+    private let motion = CMMotionManager()
     private var displayLink: CADisplayLink?
     
     // MARK: Lifecycle
     
-    override open func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        imageScrollView.delegate = self
         imageScrollView.image = image
         imageScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         imageScrollView.frame = view.frame
@@ -61,7 +79,7 @@ open class ImageViewController: UIViewController {
     private var initialLayout = true
 
     /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (for initial layout).
-    override open func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         if initialLayout {
@@ -70,7 +88,7 @@ open class ImageViewController: UIViewController {
         }
     }
 
-    override open func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         startMotionUpdates()
@@ -85,25 +103,32 @@ open class ImageViewController: UIViewController {
 
 // MARK: - Motion Logic
 
-extension ImageViewController {
+extension ImageViewController: UIScrollViewDelegate {
+    /// Calling this method will only start tracking motion if `isMotionEnabled` is set to `true`.
+    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app becomes active.
     @objc
     open func startMotionUpdates() {
-        imageScrollView.startTrackingMotion()
+        guard isMotionEnabled, motion.isGyroAvailable, !motion.isGyroActive else {
+            return
+        }
+        motion.startGyroUpdates()
         displayLink = CADisplayLink(target: self, selector: #selector(updateWithMotionGyroData))
         displayLink?.add(to: .main, forMode: .common)
     }
 
+    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app resigns being active.
     @objc
     open func stopMotionUpdates() {
-        imageScrollView.stopTrackingMotion()
+        motion.stopGyroUpdates()
         displayLink?.invalidate()
         displayLink = nil
     }
 
+    /// Main logic for updating UI based on the current gyroscope data. Override if needed.
     @objc
     open func updateWithMotionGyroData() {
         guard
-            let gyroData = imageScrollView.motionGyroData,
+            let gyroData = motionGyroData,
             let offset = calculatedContentOffset(with: gyroData)
             else {
                 return
@@ -112,6 +137,36 @@ extension ImageViewController {
         UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { [weak self] () in
             self?.imageScrollView.setContentOffset(offset, animated: false)
             }, completion: nil)
+    }
+
+    // MARK: UIScrollViewDelegate
+
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageScrollView.stackView
+    }
+
+    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        stopMotionUpdates()
+    }
+
+    open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        startMotionUpdates()
+    }
+
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        stopMotionUpdates()
+    }
+
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            startMotionUpdates()
+        }
+    }
+
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        startMotionUpdates()
     }
     
     // MARK: Helpers

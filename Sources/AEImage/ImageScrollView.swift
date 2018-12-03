@@ -5,7 +5,6 @@
  */
 
 import UIKit
-import CoreMotion
 
 /**
     This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
@@ -13,13 +12,11 @@ import CoreMotion
 
     It may be used directly from code or from storyboard with auto layout,
     just set its `image` and `displayMode` properties and it will do the rest.
-    
-    It will automatically receive gyro data and update its content offset based on `motionDelegate` configuration.
+
     It's also possible to enable `infiniteScroll` effect by property (useful for 360 panorama images or similar).
 */
 open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
-    
-    // MARK: - Types
+    // MARK: Types
     
     /// Modes for calculating zoom scale.
     public enum DisplayMode {
@@ -45,7 +42,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         case vertical
     }
     
-    // MARK: - Outlets
+    // MARK: Outlets
     
     /// Stack view is placeholder for imageView.
     public let stackView = UIStackView()
@@ -57,7 +54,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     private let leadingImageView = UIImageView()
     private let trailingImageView = UIImageView()
     
-    // MARK: - Properties
+    // MARK: Properties
     
     /// Image to be displayed. UI will be updated whenever you set this property.
     @IBInspectable open var image: UIImage? {
@@ -89,26 +86,8 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
 
     /// Flag that determines if horizontal scrolling of image is enabled. Defaults to true.
     open var isHorizontalScrollEnabled: Bool = true
-
-    /// Defines if gyro updates are enabled or not. Defaults to `false`.
-    open var isMotionEnabled = false {
-        didSet {
-            if isMotionEnabled != oldValue {
-                isMotionEnabled ? startTrackingMotion() : stopTrackingMotion()
-            }
-        }
-    }
-
-    /// Periodically check the value of this property to process the gyroscope data.
-    /// If `isMotionEnabled` is not `true` or gyroscope data is not available, the value of this property is `nil`.
-    public var motionGyroData: CMGyroData? {
-        return motion.gyroData
-    }
-
-    /// System motion manager
-    private let motion = CMMotionManager()
     
-    // MARK: - Override
+    // MARK: Override
     
     /// Whenever frame property is changed zoom scales are gonna be re-calculated.
     override open var frame: CGRect {
@@ -177,7 +156,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
     }
     
-    // MARK: - Init
+    // MARK: Init
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -197,6 +176,24 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     private func commonInit() {
         configureSelf()
         updateUI()
+    }
+
+    // MARK: Lifecycle
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        fakeContentOffsetIfNeeded()
+    }
+
+    // MARK: API
+
+    /// This will center content offset horizontally and verticaly.
+    /// It's also called whenever `image` property is set.
+    open func centerContentOffset() {
+        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
+        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
+        let offset = CGPoint(x: centerX, y: centerY)
+        setContentOffset(offset, animated: false)
     }
     
     // MARK: Helpers
@@ -333,15 +330,6 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         contentSize = newContentSize
     }
     
-    // MARK: - Lifecycle
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        fakeContentOffsetIfNeeded()
-    }
-    
-    // MARK: Helpers
-    
     private func fakeContentOffsetIfNeeded() {
         var newOffset: CGPoint?
         let xOffset = contentOffset.x
@@ -386,62 +374,4 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
             }
         }
     }
-    
-    // MARK: - API
-    
-    /// This will center content offset horizontally and verticaly.
-    /// It's also called whenever `image` property is set.
-    open func centerContentOffset() {
-        let centerX = (stackView.frame.size.width - bounds.size.width) / 2.0
-        let centerY = (stackView.frame.size.height - bounds.size.height) / 2.0
-        let offset = CGPoint(x: centerX, y: centerY)
-        setContentOffset(offset, animated: false)
-    }
-
-    /// Calling this method will only start tracking motion if `isMotionEnabled` is set to `true`.
-    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app becomes active.
-    @objc
-    public func startTrackingMotion() {
-        guard isMotionEnabled, motion.isGyroAvailable, !motion.isGyroActive else {
-            return
-        }
-        motion.startGyroUpdates()
-    }
-
-    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app resigns being active.
-    @objc
-    public func stopTrackingMotion() {
-        motion.stopGyroUpdates()
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    /// View used for zooming must be `stackView`.
-    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return stackView
-    }
-    
-    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        stopTrackingMotion()
-    }
-    
-    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        startTrackingMotion()
-    }
-    
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        stopTrackingMotion()
-    }
-    
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            startTrackingMotion()
-        }
-    }
-    
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        startTrackingMotion()
-    }
-    
 }
