@@ -96,7 +96,7 @@ open class ImageViewController: UIViewController, MotionScrollDelegate {
     // MARK: Helpers
     
     private func rotationRate(with gyroData: CMGyroData) -> CGFloat {
-        let orientation = UIDevice.current.orientation
+        let orientation = UIApplication.shared.statusBarOrientation
         let rotationRate: CGFloat
 
         if orientation.isLandscape {
