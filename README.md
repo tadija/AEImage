@@ -23,19 +23,18 @@
 
 ## Features
 - Adaptive image viewer with multiple display modes
+- Infinite scroll effect - horizontal and vertical *(optional`)*
 - Gyro motion based scrolling *(optional)*
-- Infinite scroll effect - horizontal and vertical *(optional)*
 
 ## Usage
 
-- Use `ImageScrollView` directly as any `UIImageView` but with all additional options, or:
-
-- Subclass `ImageViewController ` and configure its `imageScrollView` and `motionSettings` as you need.
+- Use `ImageScrollView` as any `UIImageView` but with all additional options
+- Use convenience `ImageViewController ` or `ImageMotionViewController`
 
 ```swift
 import AEImage
 
-class ReadmeViewController: ImageViewController {
+class ReadmeViewController: ImageMotionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,8 +42,8 @@ class ReadmeViewController: ImageViewController {
         imageScrollView.displayMode = .fillHeight
         imageScrollView.infiniteScroll = .horizontal
         
-        motionSettings.isEnabled = true
-        motionSettings.sensitivity = 1.5
+        isMotionEnabled = true
+        motionSensitivity = 1.5
         
         image = UIImage(named: "demo")
     }
@@ -59,7 +58,7 @@ class ReadmeViewController: ImageViewController {
 - [Swift Package Manager](https://swift.org/package-manager/):
 
 ```
-.Package(url: "https://github.com/tadija/AEImage.git", majorVersion: 2)
+.Package(url: "https://github.com/tadija/AEImage.git", majorVersion: 3)
 ```
 
 - [Carthage](https://github.com/Carthage/Carthage):
