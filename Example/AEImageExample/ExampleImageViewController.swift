@@ -7,7 +7,7 @@
 import UIKit
 import AEImage
 
-class ExampleImageViewController: ImageViewController {
+class ExampleImageViewController: ImageMotionViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
