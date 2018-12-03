@@ -160,21 +160,22 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        commonInit()
+        configure()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        commonInit()
+        configure()
     }
     
     public init() {
         super.init(frame: CGRect.zero)
-        commonInit()
+        configure()
     }
     
-    private func commonInit() {
-        configureSelf()
+    private func configure() {
+        configureScrollView()
+        configureStackView()
         updateUI()
     }
 
@@ -183,6 +184,14 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     open override func layoutSubviews() {
         super.layoutSubviews()
         fakeContentOffsetIfNeeded()
+    }
+
+    // MARK: UIScrollViewDelegate
+
+    /// View used for zooming must be `stackView`.
+    /// Be sure to keep this logic in case of custom `UIScrollViewDelegate` implementation.
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return stackView
     }
 
     // MARK: API
@@ -197,11 +206,6 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     // MARK: Helpers
-    
-    private func configureSelf() {
-        configureScrollView()
-        configureStackView()
-    }
     
     private func configureScrollView() {
         backgroundColor = UIColor.black
