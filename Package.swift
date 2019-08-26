@@ -1,4 +1,4 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.0
 
 /**
  *  https://github.com/tadija/AEImage
@@ -11,7 +11,10 @@ import PackageDescription
 let package = Package(
     name: "AEImage",
     products: [
-        .library(name: "AEImage", targets: ["AEImage"])
+        .library(
+            name: "AEImage",
+            targets: ["AEImage"]
+        )
     ],
     targets: [
         .target(
