@@ -1,6 +1,6 @@
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2018
+ *  Copyright (c) Marko Tadić 2016-2019
  *  Licensed under the MIT license. See LICENSE file.
  */
 
@@ -72,7 +72,7 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         }
     }
     
-    /// Infinite scroll effect (think of 360 panorama). Defaults to `false`.
+    /// Infinite scroll effect (think of 360 panorama). Defaults to `.disabled`.
     open var infiniteScroll: InfiniteScroll = .disabled {
         didSet {
             if infiniteScroll != oldValue {
@@ -86,6 +86,9 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
 
     /// Flag that determines if horizontal scrolling of image is enabled. Defaults to true.
     open var isHorizontalScrollEnabled: Bool = true
+
+    /// Flag for toggling infinite scroll effect (ie. during zoom or some custom animation).
+    open var isInfiniteScrollEnabled = true
     
     // MARK: Override
     
@@ -183,6 +186,10 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
 
     open override func layoutSubviews() {
         super.layoutSubviews()
+
+        guard isInfiniteScrollEnabled else {
+            return
+        }
         fakeContentOffsetIfNeeded()
     }
 

@@ -1,6 +1,6 @@
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2018
+ *  Copyright (c) Marko Tadić 2016-2019
  *  Licensed under the MIT license. See LICENSE file.
  */
 
@@ -22,5 +22,30 @@ class ExampleImageViewController: ImageMotionViewController {
         motionSensitivity = 1.5
 
         image = #imageLiteral(resourceName: "demo")
+    }
+
+    @IBAction func didRecognizeDoubleTapGesture(_ sender: UITapGestureRecognizer) {
+        let imageScrollView = self.imageScrollView
+
+        imageScrollView.isInfiniteScrollEnabled = false
+
+        UIView.animate(
+            withDuration: 0.25,
+            delay: 0,
+            options: [
+                .allowUserInteraction, .beginFromCurrentState, .curveEaseOut,
+            ],
+            animations: {
+                let minScale = imageScrollView.minimumZoomScale
+                if imageScrollView.zoomScale > minScale {
+                    imageScrollView.setZoomScale(minScale, animated: false)
+                } else {
+                    let point = sender.location(in: imageScrollView.stackView)
+                    let rect = CGRect(origin: point, size: .zero)
+                    imageScrollView.zoom(to: rect, animated: false)
+                }
+        }) { _ in
+            imageScrollView.isInfiniteScrollEnabled = true
+        }
     }
 }
