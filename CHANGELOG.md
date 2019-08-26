@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.1.0
+
+- Add flag for toggling infinite scroll effect
+
 ## Version 3.0.0
 
 - Improvements and optimization

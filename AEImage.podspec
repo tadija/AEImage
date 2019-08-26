@@ -1,14 +1,14 @@
 Pod::Spec.new do |s|
 
 s.name = 'AEImage'
-s.version = '3.0.0'
+s.version = '3.1.0'
 s.license = { :type => 'MIT', :file => 'LICENSE' }
 s.summary = 'Adaptive image viewer for iOS (with support for zoom, gyro motion and infinite scroll)'
 
 s.source = { :git => 'https://github.com/tadija/AEImage.git', :tag => s.version }
 s.source_files = 'Sources/AEImage/*.swift'
 
-s.swift_version = '4.2'
+s.swift_version = '5.0'
 
 s.ios.deployment_target = '9.0'
 
