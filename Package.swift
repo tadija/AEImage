@@ -1,15 +1,16 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.1
 
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2019
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © 2016-2019 Marko Tadić
+ *  Licensed under the MIT license
  */
 
 import PackageDescription
 
 let package = Package(
     name: "AEImage",
+    platforms: [.iOS(.v9)],
     products: [
         .library(
             name: "AEImage",

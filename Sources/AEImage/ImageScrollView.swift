@@ -1,21 +1,23 @@
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2019
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © 2016-2019 Marko Tadić
+ *  Licensed under the MIT license
  */
 
 import UIKit
 
-/**
-    This is base class which consists from `UIStackView` (contanining `UIImageView`) inside of a `UIScrollView`.
-    It will automatically update to correct zoom scale (depending on `displayMode`) whenever its `frame` changes.
-
-    It may be used directly from code or from storyboard with auto layout,
-    just set its `image` and `displayMode` properties and it will do the rest.
-
-    It's also possible to enable `infiniteScroll` effect by property (useful for 360 panorama images or similar).
-*/
+/// This is base class which consists from `UIStackView`
+/// (contanining `UIImageView`) inside of a `UIScrollView`.
+/// It will automatically update to the correct zoom scale
+/// (depending on `displayMode`) whenever its `frame` changes.
+///
+/// It may be used directly from code or from storyboard with auto layout,
+/// just set its `image` and `displayMode` properties and it will do the rest.
+///
+/// It's also possible to enable `infiniteScroll` effect by property
+/// (which may be useful for 360 panorama images or similar).
 open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
+
     // MARK: Types
     
     /// Modes for calculating zoom scale.
@@ -228,7 +230,9 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
     
     private func resetStackView() {
-        stackView.arrangedSubviews.forEach { stackView.removeArrangedSubview($0) }
+        stackView.arrangedSubviews.forEach {
+            stackView.removeArrangedSubview($0)
+        }
         switch infiniteScroll {
         case .disabled:
             stackView.addArrangedSubview(imageView)
@@ -283,13 +287,25 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         let size: CGSize
         switch infiniteScroll {
         case .disabled:
-            size = CGSize(width: image.size.width, height: image.size.height)
+            size = CGSize(
+                width: image.size.width,
+                height: image.size.height
+            )
         case .horizontal:
-            size = CGSize(width: image.size.width * 3, height: image.size.height)
+            size = CGSize(
+                width: image.size.width * 3,
+                height: image.size.height
+            )
         case .vertical:
-            size = CGSize(width: image.size.width, height: image.size.height * 3)
+            size = CGSize(
+                width: image.size.width,
+                height: image.size.height * 3
+            )
         }
-        let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        let frame = CGRect(
+            x: 0, y: 0,
+            width: size.width, height: size.height
+        )
         stackView.frame = frame
         contentSize = size
     }
@@ -332,12 +348,18 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
     }
 
     private func disableVerticalScroll() {
-        let newContentSize = CGSize(width: contentSize.width, height: frame.size.height)
+        let newContentSize = CGSize(
+            width: contentSize.width,
+            height: frame.size.height
+        )
         contentSize = newContentSize
     }
 
     private func disableHorizontalScroll() {
-        let newContentSize = CGSize(width: frame.size.width, height: contentSize.height)
+        let newContentSize = CGSize(
+            width: frame.size.width,
+            height: contentSize.height
+        )
         contentSize = newContentSize
     }
     
@@ -385,4 +407,5 @@ open class ImageScrollView: UIScrollView, UIScrollViewDelegate {
             }
         }
     }
+
 }
