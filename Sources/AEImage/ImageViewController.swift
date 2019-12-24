@@ -1,18 +1,17 @@
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2019
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © 2016-2019 Marko Tadić
+ *  Licensed under the MIT license
  */
 
 import UIKit
 
-/**
-    Minimalistic view controller which just adds `ImageScrollView`
-    to its view hierarchy, and has `image` property to set its content.
-    It will also center content offset on the first call of `viewDidLayoutSubviews`.
-
-    It may be used out of the box from code or storyboard, but it might also be subclassed for custom functionality. 
-*/
+/// Minimalistic view controller which just adds `ImageScrollView`
+/// to its view hierarchy, and has `image` property to set its content.
+/// It will also center content offset on the first call of `viewDidLayoutSubviews`.
+///
+/// It may be used out of the box from code or storyboard,
+/// but it might also be subclassed for custom functionality.
 open class ImageViewController: UIViewController {
 
     /// Zoomable image view which displays the image.
@@ -37,7 +36,8 @@ open class ImageViewController: UIViewController {
         view.insertSubview(imageScrollView, at: 0)
     }
 
-    /// `imageScrollView.centerContentOffset()` will be called here, but only the first time (for initial layout).
+    /// `imageScrollView.centerContentOffset()` will be called here,
+    /// but only the first time (for initial layout).
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -48,4 +48,5 @@ open class ImageViewController: UIViewController {
     }
 
     private var initialLayout = true
+
 }

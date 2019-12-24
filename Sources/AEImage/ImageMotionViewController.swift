@@ -1,13 +1,14 @@
 /**
  *  https://github.com/tadija/AEImage
- *  Copyright (c) Marko Tadić 2016-2019
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © 2016-2019 Marko Tadić
+ *  Licensed under the MIT license
  */
 
 import UIKit
 import CoreMotion
 
-/// Subclass of `ImageViewController` which provides default implementation for handling motion gyro updates.
+/// Subclass of `ImageViewController` which provides
+/// default implementation for handling motion gyro updates.
 open class ImageMotionViewController: ImageViewController {
 
     /// Defines if gyro updates are enabled or not. Defaults to `false`.
@@ -23,7 +24,8 @@ open class ImageMotionViewController: ImageViewController {
     public var motionSensitivity: CGFloat = 1.0
 
     /// Current gyroscope data (if motion is enabled).
-    /// If motion is not enabled or gyroscope data is not available, the value of this property is `nil`.
+    /// If motion is not enabled or gyroscope data is not available,
+    /// the value of this property is `nil`.
     public var motionGyroData: CMGyroData? {
         return motion.gyroData
     }
@@ -67,10 +69,14 @@ open class ImageMotionViewController: ImageViewController {
 
     private func addObservers() {
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(startMotionUpdates),
-                           name: UIApplication.didBecomeActiveNotification, object: nil)
-        center.addObserver(self, selector: #selector(stopMotionUpdates),
-                           name: UIApplication.willResignActiveNotification, object: nil)
+        center.addObserver(
+            self, selector: #selector(startMotionUpdates),
+            name: UIApplication.didBecomeActiveNotification, object: nil
+        )
+        center.addObserver(
+            self, selector: #selector(stopMotionUpdates),
+            name: UIApplication.willResignActiveNotification, object: nil
+        )
     }
 
     private func removeObservers() {
@@ -81,8 +87,8 @@ open class ImageMotionViewController: ImageViewController {
 // MARK: - Motion Logic
 
 extension ImageMotionViewController: UIScrollViewDelegate {
-    /// Calling this method will only start tracking motion if `isMotionEnabled` is set to `true`.
-    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app becomes active.
+    /// This will start tracking motion only if `isMotionEnabled` is set to `true`.
+    /// It's called internally in `UIScrollViewDelegate` methods and when the app becomes active.
     @objc
     open func startMotionUpdates() {
         guard isMotionEnabled, motion.isGyroAvailable, !motion.isGyroActive else {
@@ -93,7 +99,8 @@ extension ImageMotionViewController: UIScrollViewDelegate {
         displayLink?.add(to: .main, forMode: .common)
     }
 
-    /// This method is called internally in some `UIScrollViewDelegate` methods and when the app resigns being active.
+    /// This method is called internally in some `UIScrollViewDelegate`
+    /// methods and when the app resigns being active.
     @objc
     open func stopMotionUpdates() {
         motion.stopGyroUpdates()
@@ -101,7 +108,7 @@ extension ImageMotionViewController: UIScrollViewDelegate {
         displayLink = nil
     }
 
-    /// Main logic for updating UI based on the current gyroscope data. Override if needed.
+    /// Main logic for updating UI based on the current gyroscope data.  Override if needed.
     @objc
     open func updateWithMotionGyroData() {
         guard
@@ -110,10 +117,17 @@ extension ImageMotionViewController: UIScrollViewDelegate {
             else {
                 return
         }
-        let options: UIView.AnimationOptions = [.beginFromCurrentState, .allowUserInteraction, .curveEaseOut]
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: options, animations: { [weak self] () in
-            self?.imageScrollView.setContentOffset(offset, animated: false)
-            }, completion: nil)
+        let options: UIView.AnimationOptions = [
+            .beginFromCurrentState, .allowUserInteraction, .curveEaseOut
+        ]
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0.0,
+            options: options,
+            animations: { [weak self] () in
+                self?.imageScrollView.setContentOffset(offset, animated: false)
+            }, completion: nil
+        )
     }
 
     // MARK: UIScrollViewDelegate
@@ -124,11 +138,13 @@ extension ImageMotionViewController: UIScrollViewDelegate {
         return imageScrollView.stackView
     }
 
-    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView,
+                                         with view: UIView?) {
         stopMotionUpdates()
     }
 
-    open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    open func scrollViewDidEndZooming(_ scrollView: UIScrollView,
+                                      with view: UIView?, atScale scale: CGFloat) {
         startMotionUpdates()
     }
 
@@ -136,7 +152,8 @@ extension ImageMotionViewController: UIScrollViewDelegate {
         stopMotionUpdates()
     }
 
-    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView,
+                                       willDecelerate decelerate: Bool) {
         if !decelerate {
             startMotionUpdates()
         }
